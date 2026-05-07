@@ -34,7 +34,7 @@
   .projects-carousel {
     scrollbar-width: none;
     -ms-overflow-style: none;
-    touch-action: pan-y;
+    touch-action: pan-y pinch-zoom;
   }
 
   .projects-carousel::-webkit-scrollbar {

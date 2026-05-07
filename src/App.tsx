@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
+import { useCallback } from 'react'
 import type { IconType } from 'react-icons'
 import {
   SiCss,
@@ -155,6 +156,22 @@ function useCurrentYear() {
   return year
 }
 
+function getProjetosPorPagina() {
+  if (typeof window === 'undefined') {
+    return 3
+  }
+
+  if (window.innerWidth < 768) {
+    return 1
+  }
+
+  if (window.innerWidth < 1024) {
+    return 2
+  }
+
+  return 3
+}
+
 type AccordionSectionProps = {
   id: string
   title: string
@@ -230,11 +247,15 @@ function App() {
   const year = useCurrentYear()
   const [mostrarTodasCertificacoes, setMostrarTodasCertificacoes] = useState(false)
   const [projetoAtivo, setProjetoAtivo] = useState(0)
+  const [projetosPorPagina, setProjetosPorPagina] = useState(3)
+  const [autoplayProjetosPausado, setAutoplayProjetosPausado] = useState(false)
   const projetosCarouselRef = useRef<HTMLDivElement | null>(null)
   const isDraggingProjetosRef = useRef(false)
   const draggedProjetosRef = useRef(false)
   const dragStartXProjetosRef = useRef(0)
   const dragScrollLeftProjetosRef = useRef(0)
+  const resumeAutoplayProjetosRef = useRef<number | null>(null)
+  const projetosPorPaginaAnteriorRef = useRef(3)
   const temCertificacoesExtras = certificacoesCursos.length > 5
   const certificacoesVisiveis =
     temCertificacoesExtras && !mostrarTodasCertificacoes
@@ -291,21 +312,57 @@ function App() {
       technologies: ['TypeScript', 'API REST', 'UX'],
       projectUrl: '#',
     },
+    
   ]
-  const projetosPorPagina = 3
-  const totalPaginasProjetos = Math.ceil(projetos.length / projetosPorPagina)
+  const totalPaginasProjetos = Math.max(1, Math.ceil(projetos.length / projetosPorPagina))
   const paginaProjetoAtiva = Math.min(
     Math.floor(projetoAtivo / projetosPorPagina),
     totalPaginasProjetos - 1,
   )
+  const autoplayProjetosAtivo = projetosPorPagina < 3 && totalPaginasProjetos > 1
+
+  const pausarAutoplayProjetos = useCallback(() => {
+    if (resumeAutoplayProjetosRef.current) {
+      window.clearTimeout(resumeAutoplayProjetosRef.current)
+    }
+
+    setAutoplayProjetosPausado(true)
+    resumeAutoplayProjetosRef.current = window.setTimeout(() => {
+      setAutoplayProjetosPausado(false)
+      resumeAutoplayProjetosRef.current = null
+    }, 5000)
+  }, [])
 
   const scrollProjetos = (direction: 'prev' | 'next') => {
-    const nextPage =
-      direction === 'next'
-        ? (paginaProjetoAtiva + 1) % totalPaginasProjetos
-        : (paginaProjetoAtiva - 1 + totalPaginasProjetos) % totalPaginasProjetos
+    const carousel = projetosCarouselRef.current
 
-    irParaPaginaProjetos(nextPage)
+    if (!carousel) {
+      return
+    }
+
+    pausarAutoplayProjetos()
+
+    const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth
+    const scrollAmount = carousel.clientWidth * 0.82
+    const isAtStart = carousel.scrollLeft <= 8
+    const isAtEnd = carousel.scrollLeft >= maxScrollLeft - 8
+    let nextScrollLeft =
+      direction === 'next'
+        ? carousel.scrollLeft + scrollAmount
+        : carousel.scrollLeft - scrollAmount
+
+    if (direction === 'next' && isAtEnd) {
+      nextScrollLeft = 0
+    }
+
+    if (direction === 'prev' && isAtStart) {
+      nextScrollLeft = maxScrollLeft
+    }
+
+    carousel.scrollTo({
+      left: Math.max(0, Math.min(nextScrollLeft, maxScrollLeft)),
+      behavior: 'smooth',
+    })
   }
 
   const atualizarProjetoAtivo = () => {
@@ -346,7 +403,7 @@ function App() {
     setProjetoAtivo((atual) => (atual === projetoAtual ? atual : projetoAtual))
   }
 
-  const irParaProjeto = (index: number) => {
+  const irParaProjeto = useCallback((index: number) => {
     const carousel = projetosCarouselRef.current
 
     if (!carousel) {
@@ -359,20 +416,24 @@ function App() {
       return
     }
 
-    carousel.scrollTo({ left: slide.offsetLeft, behavior: 'smooth' })
-    setProjetoAtivo(index)
-  }
+    const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth
+    const scrollLeft = Math.min(slide.offsetLeft, maxScrollLeft)
 
-  const irParaPaginaProjetos = (pagina: number) => {
+    carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' })
+    setProjetoAtivo(index)
+  }, [])
+
+  const irParaPaginaProjetos = useCallback((pagina: number) => {
     const index = Math.min(pagina * projetosPorPagina, projetos.length - 1)
     irParaProjeto(index)
-  }
+  }, [irParaProjeto, projetos.length, projetosPorPagina])
 
   const handleProjetosPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0 || !projetosCarouselRef.current) {
       return
     }
 
+    pausarAutoplayProjetos()
     isDraggingProjetosRef.current = true
     draggedProjetosRef.current = false
     dragStartXProjetosRef.current = event.clientX
@@ -430,6 +491,63 @@ function App() {
     event.preventDefault()
     abrirProjeto(projectUrl)
   }
+
+  useEffect(() => {
+    const updateProjetosPorPagina = () => {
+      setProjetosPorPagina(getProjetosPorPagina())
+    }
+
+    updateProjetosPorPagina()
+    window.addEventListener('resize', updateProjetosPorPagina)
+
+    return () => {
+      window.removeEventListener('resize', updateProjetosPorPagina)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (projetosPorPaginaAnteriorRef.current === projetosPorPagina) {
+      return
+    }
+
+    projetosPorPaginaAnteriorRef.current = projetosPorPagina
+
+    const paginaAtual = Math.min(
+      Math.floor(projetoAtivo / projetosPorPagina),
+      totalPaginasProjetos - 1,
+    )
+
+    irParaPaginaProjetos(paginaAtual)
+  }, [irParaPaginaProjetos, projetoAtivo, projetosPorPagina, totalPaginasProjetos])
+
+  useEffect(() => {
+    if (!autoplayProjetosAtivo || autoplayProjetosPausado || isDraggingProjetosRef.current) {
+      return
+    }
+
+    const intervalId = window.setInterval(() => {
+      const nextPage = (paginaProjetoAtiva + 1) % totalPaginasProjetos
+      irParaPaginaProjetos(nextPage)
+    }, 6000)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [
+    autoplayProjetosAtivo,
+    autoplayProjetosPausado,
+    irParaPaginaProjetos,
+    paginaProjetoAtiva,
+    totalPaginasProjetos,
+  ])
+
+  useEffect(() => {
+    return () => {
+      if (resumeAutoplayProjetosRef.current) {
+        window.clearTimeout(resumeAutoplayProjetosRef.current)
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen overflow-x-hidden text-[#d8e6fd]">
@@ -721,7 +839,7 @@ function App() {
               </div>
               <div
                 ref={projetosCarouselRef}
-                className="projects-carousel flex snap-x snap-mandatory gap-5 overflow-x-auto pt-2 pb-3"
+                className="projects-carousel flex snap-x snap-mandatory gap-5 overflow-x-auto pt-2 pr-[22%] pb-3 md:pr-[16%] lg:pr-0"
                 onPointerDown={handleProjetosPointerDown}
                 onPointerMove={handleProjetosPointerMove}
                 onPointerUp={stopProjetosDrag}
@@ -733,7 +851,7 @@ function App() {
                 {projetos.map((project) => (
                   <article
                     key={project.title}
-                    className="group relative flex min-h-[28.5rem] w-[75%] flex-none cursor-pointer snap-start self-stretch flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 shadow-soft-xl transition duration-200 hover:-translate-y-1 hover:border-sky-300/70 hover:bg-slate-950 hover:shadow-[0_0_24px_rgba(56,189,248,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 sm:w-[18.75rem] md:w-[calc((100%-1.25rem)/2.45)] lg:w-[calc((100%-2.5rem)/3.5)]"
+                    className="group relative flex min-h-[28.5rem] w-[91%] flex-none cursor-pointer snap-start self-stretch flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 shadow-soft-xl transition duration-200 hover:-translate-y-1 hover:border-sky-300/70 hover:bg-slate-950 hover:shadow-[0_0_24px_rgba(56,189,248,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)]"
                     role="link"
                     tabIndex={0}
                     aria-label={`Abrir projeto ${project.title}`}
@@ -786,7 +904,10 @@ function App() {
                     }`}
                     aria-label={`Ir para página ${index + 1} dos projetos`}
                     aria-current={paginaProjetoAtiva === index ? 'true' : undefined}
-                    onClick={() => irParaPaginaProjetos(index)}
+                    onClick={() => {
+                      pausarAutoplayProjetos()
+                      irParaPaginaProjetos(index)
+                    }}
                   />
                 ))}
               </div>
