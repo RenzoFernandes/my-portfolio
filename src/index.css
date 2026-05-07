@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-padding-top: 5rem;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-950 font-sans text-[16px] text-slate-100 antialiased;
+    background-image: radial-gradient(circle at top left, #1d2438 0, #020617 46%);
+  }
+}
+
+@layer utilities {
+  @keyframes avatar-glow {
+    0%, 100% {
+      opacity: 0.62;
+      transform: scale(0.98);
+    }
+
+    50% {
+      opacity: 0.88;
+      transform: scale(1.04);
+    }
+  }
+
+  .projects-carousel {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    touch-action: pan-y;
+  }
+
+  .projects-carousel::-webkit-scrollbar {
+    display: none;
+  }
+}
+
