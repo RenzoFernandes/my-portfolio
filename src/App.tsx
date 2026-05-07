@@ -429,25 +429,26 @@ function App() {
   }, [irParaProjeto, projetos.length, projetosPorPagina])
 
   const handleProjetosPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0 || !projetosCarouselRef.current) {
+    if (!projetosCarouselRef.current || (event.pointerType === 'mouse' && event.button !== 0)) {
       return
     }
 
     pausarAutoplayProjetos()
-    isDraggingProjetosRef.current = true
     draggedProjetosRef.current = false
     dragStartXProjetosRef.current = event.clientX
     dragScrollLeftProjetosRef.current = projetosCarouselRef.current.scrollLeft
+    isDraggingProjetosRef.current = event.pointerType === 'mouse'
   }
 
   const handleProjetosPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDraggingProjetosRef.current || !projetosCarouselRef.current) {
+    if (!projetosCarouselRef.current) {
       return
     }
 
-    draggedProjetosRef.current = Math.abs(event.clientX - dragStartXProjetosRef.current) > 5
+    const dragDistance = event.clientX - dragStartXProjetosRef.current
+    draggedProjetosRef.current = Math.abs(dragDistance) > 8
 
-    if (!draggedProjetosRef.current) {
+    if (!isDraggingProjetosRef.current || !draggedProjetosRef.current) {
       return
     }
 
@@ -458,7 +459,7 @@ function App() {
     }
 
     projetosCarouselRef.current.scrollLeft =
-      dragScrollLeftProjetosRef.current - (event.clientX - dragStartXProjetosRef.current)
+      dragScrollLeftProjetosRef.current - dragDistance
   }
 
   const stopProjetosDrag = () => {
