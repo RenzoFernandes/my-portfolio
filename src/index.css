@@ -8,29 +8,18 @@
   }
 
   html {
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 3.75rem;
     scroll-behavior: smooth;
+    background-color: #020202;
+    overflow-x: hidden;
   }
 
   body {
-    @apply bg-slate-950 font-sans text-[16px] text-slate-100 antialiased;
-    background-image: radial-gradient(circle at top left, #1d2438 0, #020617 46%);
+    @apply font-sans text-[16px] text-zinc-400 antialiased bg-[#020202];
   }
 }
 
 @layer utilities {
-  @keyframes avatar-glow {
-    0%, 100% {
-      opacity: 0.62;
-      transform: scale(0.98);
-    }
-
-    50% {
-      opacity: 0.88;
-      transform: scale(1.04);
-    }
-  }
-
   .projects-carousel {
     scroll-behavior: smooth;
     scrollbar-width: none;
@@ -42,5 +31,104 @@
   .projects-carousel::-webkit-scrollbar {
     display: none;
   }
-}
 
+  /* --- Elite Corporate Sci-Fi Aesthetic --- */
+
+  /* Shimmer Text */
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+
+  /* Scanner Holográfico */
+  @keyframes scanner {
+    0% { top: -10%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 110%; opacity: 0; }
+  }
+
+  /* Órbitas Complexas */
+  @keyframes orbit-1 {
+    from { transform: rotateX(60deg) rotateY(0deg) rotateZ(0deg); }
+    to { transform: rotateX(60deg) rotateY(360deg) rotateZ(360deg); }
+  }
+  @keyframes orbit-2 {
+    from { transform: rotateX(45deg) rotateY(45deg) rotateZ(0deg); }
+    to { transform: rotateX(45deg) rotateY(45deg) rotateZ(-360deg); }
+  }
+
+  /* Scroll Reveal Cinematic */
+  .reveal {
+    opacity: 0;
+    transform: translateY(50px) scale(0.98);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Módulos Premium (Cards) */
+  .premium-card {
+    background: linear-gradient(160deg, rgba(20,20,20,0.9) 0%, rgba(5,5,5,0.95) 100%);
+    box-shadow: 
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 0 rgba(255, 255, 255, 0.02),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 20px 40px -10px rgba(0, 0, 0, 0.8);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .premium-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(34,211,238,0.1), transparent);
+    transform: translateX(-100%) skewX(-15deg);
+    transition: transform 0.8s ease-in-out;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .premium-card:hover::after {
+    transform: translateX(100%) skewX(-15deg);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.2; transform: scale(0.95); }
+    50% { opacity: 0.5; transform: scale(1.05); }
+  }
+  .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+  /* Background Ambient Glow Animations */
+  @keyframes ambient-glow-1 {
+    0%, 100% { opacity: 0.3; transform: scale(1) translate(0, 0); }
+    50% { opacity: 0.5; transform: scale(1.05) translate(2%, 2%); }
+  }
+  @keyframes ambient-glow-2 {
+    0%, 100% { opacity: 0.2; transform: scale(1) translate(0, 0); }
+    50% { opacity: 0.4; transform: scale(1.1) translate(-2%, -1%); }
+  }
+  
+  .animate-ambient-glow-1 { animation: ambient-glow-1 12s ease-in-out infinite alternate; }
+  .animate-ambient-glow-2 { animation: ambient-glow-2 15s ease-in-out infinite alternate-reverse; }
+
+  /* Section Background Particles */
+  @keyframes float-up {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    20% { opacity: 0.8; }
+    80% { opacity: 0.8; }
+    100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+  }
+  @keyframes float-diagonal {
+    0% { transform: translate(0, 0) scale(1); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { transform: translate(50px, -80px) scale(0.8); opacity: 0; }
+  }
+
+  .animate-float-up { animation: float-up 8s linear infinite; }
+  .animate-float-diagonal { animation: float-diagonal 10s linear infinite; }
+}

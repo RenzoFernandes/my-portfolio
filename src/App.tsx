@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useCallback } from 'react'
 import type { IconType } from 'react-icons'
@@ -36,23 +36,23 @@ import fotoPerfil from './assets/img/foto_perfil.jpeg'
 import menuOnlineImage from './assets/img/menu on-line.jpg'
 
 const headerStyles = {
-  header: 'border-slate-700/70 bg-[#0f172a]/90 text-[#d8e6fd] shadow-[0_18px_55px_rgba(2,6,23,0.42)]',
-  logo: 'text-slate-100',
-  nav: 'text-slate-300',
-  navLink: 'hover:text-cyan-200 focus-visible:text-cyan-200',
+  header: 'border-white/5 bg-black/60 text-white shadow-sm backdrop-blur-2xl supports-[backdrop-filter]:bg-black/40',
+  logo: 'text-white tracking-tighter',
+  nav: 'text-zinc-400',
+  navLink: 'hover:text-white focus-visible:text-white transition-colors duration-300',
   menuButton:
-    'border-slate-600/80 bg-slate-900/80 text-[#d8e6fd] hover:border-cyan-300/80 hover:text-cyan-100',
-  menuPanel: 'border-slate-700/80 bg-[#0f172a]/95 text-[#d8e6fd]',
-  menuNav: 'text-slate-200',
-  menuLink: 'hover:bg-slate-800/90 hover:text-cyan-100',
+    'border-white/10 bg-zinc-900/50 text-zinc-300 hover:border-white/20 hover:text-white backdrop-blur-md',
+  menuPanel: 'border-white/10 bg-zinc-950/95 text-zinc-300 backdrop-blur-xl shadow-2xl',
+  menuNav: 'text-zinc-300',
+  menuLink: 'hover:bg-white/5 hover:text-white',
 }
 
-const containerStyles = 'mx-auto w-full max-w-7xl px-8 sm:px-14 lg:px-20'
-const titulo_cor_opacidade = 'text-slate-100'
-const texto_cor_opacidade = 'text-slate-400/95'
-const titulo_bloco_formacao = 'text-sky-300'
+const containerStyles = 'mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-16'
+const titulo_cor_opacidade = 'text-white tracking-tight'
+const texto_cor_opacidade = 'text-zinc-400'
+const titulo_bloco_formacao = 'text-zinc-200'
 const hover_card_azul =
-  'transition duration-200 hover:border-sky-300/70 hover:bg-slate-900 hover:shadow-[0_0_24px_rgba(56,189,248,0.16)]'
+  'border-white/5 bg-[#0A0A0A] premium-card transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(34,211,238,0.05)] group'
 
 type SkillItem = {
   nome: string
@@ -175,11 +175,23 @@ function getProjetosPorPagina() {
 type AccordionSectionProps = {
   id: string
   title: string
+  action?: React.ReactNode
   children: React.ReactNode
 }
 
-function AccordionSection({ children }: AccordionSectionProps) {
-  return <>{children}</>
+function AccordionSection({ title, action, children }: AccordionSectionProps) {
+  return (
+    <div className="w-full">
+      <div className="flex items-center gap-4 mb-12 reveal">
+        <h2 className="text-3xl font-black tracking-tighter uppercase sm:text-4xl text-transparent bg-clip-text bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] animate-[shimmer_4s_infinite]">
+          {title}
+        </h2>
+        <div className="h-px flex-1 bg-gradient-to-r from-zinc-700 to-transparent" />
+        {action && <div>{action}</div>}
+      </div>
+      {children}
+    </div>
+  )
 }
 
 type MobileMenuProps = {
@@ -243,6 +255,136 @@ function MobileMenu({ links }: MobileMenuProps) {
   )
 }
 
+function ParticlesBackground() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+
+    if (!canvas) {
+      return
+    }
+
+    const context = canvas.getContext('2d')
+
+    if (!context) {
+      return
+    }
+
+    let animationFrame = 0
+    const particles = Array.from({ length: 64 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      radius: Math.random() * 1.6 + 0.4,
+      speed: Math.random() * 0.18 + 0.05,
+      opacity: Math.random() * 0.35 + 0.12,
+    }))
+
+    const resizeCanvas = () => {
+      const pixelRatio = window.devicePixelRatio || 1
+      canvas.width = window.innerWidth * pixelRatio
+      canvas.height = window.innerHeight * pixelRatio
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+    }
+
+    const draw = () => {
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight)
+
+      particles.forEach((particle) => {
+        particle.y -= particle.speed / window.innerHeight
+
+        if (particle.y < -0.02) {
+          particle.y = 1.02
+          particle.x = Math.random()
+        }
+
+        context.beginPath()
+        context.arc(
+          particle.x * window.innerWidth,
+          particle.y * window.innerHeight,
+          particle.radius,
+          0,
+          Math.PI * 2,
+        )
+        context.fillStyle = `rgba(103, 232, 249, ${particle.opacity})`
+        context.fill()
+      })
+
+      animationFrame = window.requestAnimationFrame(draw)
+    }
+
+    resizeCanvas()
+    draw()
+    window.addEventListener('resize', resizeCanvas)
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame)
+      window.removeEventListener('resize', resizeCanvas)
+    }
+  }, [])
+
+  return (
+    <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-[#020202]">
+      
+      {/* 1. Camada de Glow (Ambient Light) - Unificada em variações de Cyan e Suavizada */}
+      {/* Cyan Glow - Top Right */}
+      <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-cyan-600/15 blur-[120px] animate-ambient-glow-1" />
+      {/* Lighter Cyan Glow - Bottom Left */}
+      <div className="absolute -bottom-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-cyan-400/10 blur-[140px] animate-ambient-glow-2" />
+      {/* Darker Cyan Glow - Center Right */}
+      <div className="absolute top-[30%] right-[20%] w-[50%] h-[50%] rounded-full bg-cyan-700/15 blur-[120px] animate-ambient-glow-1" style={{ animationDelay: '2s' }} />
+
+      {/* Feixes de Luz Volumétricos (Light Beams) - Mais Suaves e Variações de Cyan */}
+      <div className="absolute top-[-10%] left-[-20%] w-[150%] h-[400px] bg-gradient-to-b from-cyan-300/15 via-cyan-500/5 to-transparent rotate-[-35deg] blur-[60px] pointer-events-none transform-gpu origin-top-left" />
+      <div className="absolute top-[30%] right-[-30%] w-[150%] h-[400px] bg-gradient-to-b from-cyan-600/15 via-transparent to-transparent rotate-[45deg] blur-[60px] pointer-events-none transform-gpu origin-top-right" />
+
+      {/* 2. Camada de Grid Tecnológico (Quase invisível, esmaecido nas bordas) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-70" />
+      
+      {/* 3. Camada de Partículas (Poeira Digital) */}
+      <canvas ref={canvasRef} className="absolute inset-0 opacity-80" />
+      
+      {/* Vignette effect para fechar as bordas um pouco mais escuras e focar no conteúdo */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020202_150%)]" />
+    </div>
+  )
+}
+
+type SectionBackgroundProps = {
+  variant?: 'cyan' | 'purple' | 'emerald' | 'blue'
+  align?: 'left' | 'right' | 'center'
+}
+
+function SectionBackground({ align = 'center' }: SectionBackgroundProps) {
+  // Ignoramos a prop variant para manter apenas a cor unificada (Cyan) com variações de intensidade
+  const glowColor = 
+    align === 'left' ? 'bg-cyan-400/10' :
+    align === 'right' ? 'bg-cyan-600/15' :
+    'bg-cyan-500/15'
+
+  const lampPosition = 
+    align === 'left' ? 'top-[10%] left-[-10%] w-[600px] h-[600px]' :
+    align === 'right' ? 'top-[10%] right-[-10%] w-[600px] h-[600px]' :
+    'top-[10%] left-[50%] -translate-x-1/2 w-[600px] h-[600px]'
+
+  return (
+    // Removido overflow-hidden para que as luzes se espalhem suavemente entre as seções sem corte reto
+    <div className="absolute inset-0 z-0 pointer-events-none opacity-100">
+      {/* Massive Background Lamp - Mais suave e com mais blur */}
+      <div className={`absolute ${lampPosition} rounded-full blur-[130px] animate-ambient-glow-1 ${glowColor}`} />
+      
+      {/* CSS Floating Particles (Cyan variations, muito suaves) */}
+      <div className={`absolute top-[20%] left-[10%] w-1 h-1 rounded-full bg-cyan-300 animate-float-up opacity-30`} />
+      <div className={`absolute top-[60%] right-[20%] w-[2px] h-[2px] rounded-full bg-cyan-500 animate-float-diagonal opacity-20`} style={{ animationDelay: '2s' }} />
+      <div className={`absolute bottom-[30%] left-[30%] w-1.5 h-1.5 rounded-full bg-cyan-400 animate-float-up opacity-40`} style={{ animationDelay: '4s' }} />
+      <div className={`absolute top-[40%] left-[80%] w-[2px] h-[2px] rounded-full bg-cyan-200 animate-float-diagonal opacity-20`} style={{ animationDelay: '1s' }} />
+      <div className={`absolute bottom-[10%] right-[40%] w-1 h-1 rounded-full bg-cyan-500 animate-float-up opacity-30`} style={{ animationDelay: '5s' }} />
+    </div>
+  )
+}
+
 function App() {
   const year = useCurrentYear()
   const [mostrarTodasCertificacoes, setMostrarTodasCertificacoes] = useState(false)
@@ -256,6 +398,41 @@ function App() {
   const dragScrollLeftProjetosRef = useRef(0)
   const resumeAutoplayProjetosRef = useRef<number | null>(null)
   const projetosPorPaginaAnteriorRef = useRef(3)
+
+  // Lógica para Animações de Scroll com MutationObserver
+  useEffect(() => {
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active')
+          // Stop observing once animated
+          observer.unobserve(entry.target)
+        }
+      })
+    }
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    const observer = new IntersectionObserver(observerCallback, observerOptions)
+    
+    // Observar elementos existentes
+    const observeElements = () => {
+      const revealElements = document.querySelectorAll('.reveal:not(.active)')
+      revealElements.forEach((el) => observer.observe(el))
+    }
+    
+    observeElements()
+
+    // MutationObserver para garantir que elementos dinâmicos (como dentro do map ou carregados tardiamente) sejam animados
+    const mutationObserver = new MutationObserver(() => {
+      observeElements()
+    })
+    
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      observer.disconnect()
+      mutationObserver.disconnect()
+    }
+  }, [])
   const temCertificacoesExtras = certificacoesCursos.length > 5
   const certificacoesVisiveis =
     temCertificacoesExtras && !mostrarTodasCertificacoes
@@ -551,19 +728,20 @@ function App() {
   }, [])
 
   return (
-    <div className="min-h-screen overflow-x-hidden text-[#d8e6fd]">
+    <div className="flex flex-col min-h-screen overflow-clip text-zinc-300 relative bg-black selection:bg-zinc-800 selection:text-white">
+      <ParticlesBackground />
       <header
-        className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-colors duration-300 ${headerStyles.header}`}
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${headerStyles.header}`}
       >
         <div className={`flex items-center justify-between gap-4 py-4 sm:py-5 ${containerStyles}`}>
           <a href="#hero" className="inline-flex min-w-0 items-center gap-2">
-            <span className={`truncate text-sm font-extrabold uppercase tracking-[0.2em] sm:text-[0.95rem] ${headerStyles.logo}`}>
+            <span className={`truncate text-sm font-bold uppercase tracking-[0.15em] sm:text-[0.95rem] ${headerStyles.logo}`}>
               Renzo Fernandes
             </span>
           </a>
           <div className="flex items-center gap-3 sm:gap-5">
             <nav
-              className={`hidden items-center gap-7 text-sm font-semibold sm:flex ${headerStyles.nav}`}
+              className={`hidden items-center gap-7 text-sm font-medium sm:flex ${headerStyles.nav}`}
               aria-label="Navegação principal"
             >
               {navLinks.map((link) => (
@@ -579,91 +757,82 @@ function App() {
             <MobileMenu links={navLinks} />
           </div>
         </div>
-        <div className="h-px w-full bg-gradient-to-r from-blue-300/0 via-blue-500/80 to-blue-300/0" aria-hidden="true" />
+        <div className="h-px w-full bg-gradient-to-r from-white/0 via-white/10 to-white/0" aria-hidden="true" />
       </header>
 
-      <main className="pt-[4.625rem] sm:pt-[3.875rem]">
+      <main className="flex-grow pt-[4.625rem] sm:pt-[3.875rem]">
         {/* HERO */}
         <section
           id="hero"
-          className="border-b border-slate-800/60 bg-gradient-to-b from-slate-950/20 to-slate-950/80 pt-12 pb-14"
+          className="relative bg-transparent pt-4 pb-14"
         >
-          <div className={containerStyles}>
+          <SectionBackground variant="cyan" align="right" />
+          <div className={`relative z-10 ${containerStyles}`}>
             <div className="grid items-stretch gap-10 lg:grid-cols-[minmax(0,1.8fr)_minmax(0,1.2fr)]">
               <div className="order-1 flex min-w-0 max-w-4xl flex-col items-start text-left">
-              <div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-300/25 bg-slate-900/80 px-3 py-1.5 text-[0.72rem] font-semibold text-cyan-100 shadow-[0_12px_35px_rgba(8,47,73,0.22)] ring-1 ring-white/5 backdrop-blur sm:text-xs">
-                <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,0.85)]" aria-hidden="true" />
-                <span className="min-w-0 leading-relaxed">
-                  Disponível para oportunidades • Estágio / Júnior
-                </span>
+              <div className="mb-6 inline-flex max-w-full items-center gap-3 reveal">
+                <div className="px-2 py-1 rounded border border-emerald-500/30 bg-emerald-500/10 text-[0.65rem] font-mono text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                  Disponível • Estágio / Júnior
+                </div>
               </div>
-              <h1 className="mb-4 leading-tight">
-                <span className={`block text-3xl font-semibold sm:text-4xl md:text-5xl ${titulo_cor_opacidade}`}>
+              <h1 className="mb-6 leading-none reveal" style={{ transitionDelay: '100ms' }}>
+                <span className="block text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-[6rem] lg:text-[7rem] drop-shadow-[0_0_40px_rgba(255,255,255,0.1)]">
                   Renzo Fernandes
                 </span>
-                <span className={`block text-3xl font-semibold sm:text-4xl md:text-5xl ${titulo_cor_opacidade}`}>
-                  <span className="inline-block">
-                    Estudante de Sistemas de Informação
-                  </span>
+                <span className="block mt-5 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_4s_infinite]">
+                  Estudante de Sistemas de Informação
                 </span>
               </h1>
               {/* RESUMO PROFISSIONAL - edite o texto abaixo */}
-              <p className={`max-w-xl text-sm leading-7 sm:text-base ${texto_cor_opacidade}`}>
+              <p className={`max-w-xl text-sm leading-relaxed sm:text-base reveal text-zinc-400 drop-shadow-md`} style={{ transitionDelay: '200ms' }}>
                 Busco minha primeira oportunidade em tecnologia, com interesse em desenvolvimento, dados e sistemas corporativos, aplicando a tecnologia na solução de problemas reais.
               </p>
               {/* BOTÕES DE AÇÃO - Hero */}
-              <div className="mt-7 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row reveal" style={{ transitionDelay: '300ms' }}>
                 <a
                   href="#projetos"
-                  className="inline-flex items-center justify-center rounded-lg border border-cyan-200/50 bg-cyan-200/15 px-5 py-2.5 text-sm font-semibold text-cyan-100 shadow-[0_14px_35px_rgba(34,211,238,0.14)] backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-cyan-100/70 hover:bg-cyan-100/25 hover:text-white hover:shadow-[0_18px_45px_rgba(34,211,238,0.22)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                  className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-3 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                 >
                   Ver Projetos
                 </a>
                 <a
                   href="#contato"
-                  className="inline-flex items-center justify-center rounded-lg border border-cyan-300/35 bg-slate-900/70 px-5 py-2.5 text-sm font-semibold text-cyan-100 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-200/70 hover:bg-slate-800/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                  className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-zinc-700/50 hover:bg-[#222] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                 >
                   Contato
                 </a>
               </div>
               {/* CONTATO RÁPIDO - botões compridos no final da coluna esquerda */}
               <div className="mt-6 grid w-full max-w-[38rem] gap-3 lg:mt-auto lg:pt-10">
-                {/* EXTRA CONTACT BUTTON - remove this whole <a> if you do not want it */}
                 <div
-                  /* LINK - edit href here */
-                  className="flex w-full flex-col items-start gap-1 rounded-lg border border-cyan-300/20 bg-slate-900/70 px-4 py-3 text-sm font-medium text-slate-200 shadow-[0_14px_35px_rgba(8,47,73,0.18)] ring-1 ring-white/5 backdrop-blur transition duration-200 hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center"
+                  className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center ${hover_card_azul}`}
                 >
-                  {/* TEXT - edit the label here */}
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 opacity-70">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                     Local
                   </span>
-                  {/* TEXT - edit the value here */}
-                  <span className="break-all text-[#d8e6fd] sm:col-start-2">
+                  <span className="break-all text-slate-300 sm:col-start-2">
                     Santos - SP
                   </span>
                 </div>
                 <a
-                  /* LINK - edit href here */
                   href="mailto:renzoheikivf@gmail.com"
-                  className="flex w-full flex-col items-start gap-1 rounded-lg border border-cyan-300/20 bg-slate-900/70 px-4 py-3 text-sm font-medium text-slate-200 shadow-[0_14px_35px_rgba(8,47,73,0.18)] ring-1 ring-white/5 backdrop-blur transition duration-200 hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center"
+                  className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
                 >
-                  {/* TEXT - edit the label here */}
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 opacity-70">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                     E-mail
                   </span>
-                  {/* TEXT - edit the value here */}
-                  <span className="break-all text-sky-300 underline underline-offset-4 sm:col-start-2">
+                  <span className="break-all text-slate-300 sm:col-start-2">
                     renzoheikivf@gmail.com
                   </span>
                 </a>
                 <a
                   href="https://wa.me/5513997000096?text=Olá%20Renzo,%20vi%20seu%20portfólio%20e%20gostaria%20de%20falar%20com%20você."
-                  className="flex w-full flex-col items-start gap-1 rounded-lg border border-cyan-300/20 bg-slate-900/70 px-4 py-2.5 text-sm font-medium text-slate-200 shadow-[0_14px_35px_rgba(8,47,73,0.18)] ring-1 ring-white/5 backdrop-blur transition duration-200 hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center"
+                  className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
                 >
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 opacity-70">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
                     Telefone
                   </span>
-                  <span className="text-sky-300 underline underline-offset-4 sm:col-start-2">
+                  <span className="text-slate-300 sm:col-start-2">
                     (13) 99700-0096
                   </span>
                 </a>
@@ -672,26 +841,67 @@ function App() {
 
               {/* FOTO DE PERFIL - para trocar, substitua o arquivo em src/assets/img/foto_perfil */}
               <div className="order-2 flex min-w-0 flex-col items-center lg:items-end">
-                {/* BLOCO DA FOTO - ajuste posição e tamanho aqui */}
-                <div className="flex w-full max-w-2xl justify-center">
-                  <div className="relative isolate inline-flex rounded-full before:absolute before:inset-[-0.35rem] before:-z-10 before:rounded-full before:bg-[linear-gradient(135deg,rgba(0,212,255,0.38),rgba(123,97,255,0.3),rgba(0,212,255,0.12))] before:opacity-70 before:blur-[2px] after:absolute after:inset-[-1.2rem] after:-z-20 after:rounded-full after:bg-[radial-gradient(circle,rgba(0,212,255,0.2),rgba(123,97,255,0.13)_42%,transparent_70%)] after:opacity-80 after:blur-2xl after:animate-[avatar-glow_8s_ease-in-out_infinite]">
-                    <img
-                      src={fotoPerfil}
-                      alt="Foto de perfil de Renzo Fernandes"
-                      className="relative z-10 h-[8.75rem] w-[8.75rem] rounded-full border border-cyan-200/35 object-cover shadow-[0_0_45px_rgba(0,212,255,0.16)] ring-4 ring-sky-400/10 transition duration-300 hover:scale-[1.03] hover:border-cyan-100/60 hover:shadow-[0_0_60px_rgba(123,97,255,0.22)] sm:h-[10.75rem] sm:w-[10.75rem] lg:h-[12.5rem] lg:w-[12.5rem]"
-                    />
+                {/* INTERFACE CORE AVATAR - ADVANCED HUD */}
+                <div className="flex w-full max-w-2xl justify-center reveal py-12">
+                  <div className="relative isolate inline-flex w-56 h-56 sm:w-72 sm:h-72 items-center justify-center mt-12 lg:mt-8 group">
+                    
+                    {/* Pulsing Core Aura */}
+                    <div className="absolute inset-0 rounded-full bg-cyan-500/10 blur-[60px] animate-pulse-glow pointer-events-none" />
+
+                    {/* Outer Tech Ring (Dashed) */}
+                    <div className="absolute inset-[-1.5rem] rounded-full border border-white/5 border-dashed animate-[spin_40s_linear_infinite] pointer-events-none" />
+                    
+                    {/* Targeting Brackets (Corners) */}
+                    <div className="absolute inset-[-2rem] pointer-events-none">
+                      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+                      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+                      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-cyan-500/40 rounded-bl-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+                      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-500/40 rounded-br-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:translate-x-2 group-hover:translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+                    </div>
+
+                    {/* Rotating Radar Sweep */}
+                    <div className="absolute inset-[-0.5rem] rounded-full animate-[spin_4s_linear_infinite] pointer-events-none [background:conic-gradient(from_0deg,transparent_0_280deg,rgba(34,211,238,0.1)_340deg,rgba(34,211,238,0.8)_360deg)] [mask-image:radial-gradient(ellipse_at_center,transparent_68%,black_70%)]" />
+
+                    {/* Avatar Container */}
+                    <div className="relative w-full h-full rounded-full p-1.5 bg-[#0A0A0A] border border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-10 cursor-crosshair overflow-hidden group-hover:border-cyan-500/30 transition-colors duration-500">
+                      <div className="relative w-full h-full rounded-full overflow-hidden bg-slate-900">
+                        {/* Imagem */}
+                        <img
+                          src={fotoPerfil}
+                          alt="Renzo Fernandes Core"
+                          className="w-full h-full object-cover filter contrast-[1.15] saturate-50 group-hover:scale-110 group-hover:saturate-100 transition-all duration-700"
+                        />
+                        
+                        {/* Overlay Shadow para profundidade */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]/90 z-10 mix-blend-multiply pointer-events-none" />
+                        
+                        {/* Holographic Scanner Beam */}
+                        <div className="absolute inset-0 z-20 pointer-events-none animate-[scanner_3s_ease-in-out_infinite_alternate]">
+                          <div className="absolute left-[-25%] w-[150%] h-[2px] bg-cyan-400 shadow-[0_0_20px_#22d3ee,0_0_40px_#22d3ee]" />
+                          <div className="absolute left-0 w-full h-32 bg-gradient-to-t from-cyan-500/30 to-transparent opacity-60" style={{ bottom: '100%' }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* System Badges */}
+                    <div className="absolute -right-8 top-12 sm:-right-12 sm:top-16 bg-[#0A0A0A] border border-cyan-500/30 px-3 py-1.5 rounded text-[0.65rem] font-mono text-cyan-400 tracking-widest shadow-[0_0_15px_rgba(34,211,238,0.1)] z-20 backdrop-blur-md animate-pulse">
+                      SYS.SYNC
+                    </div>
+                    <div className="absolute -left-4 bottom-12 sm:-left-8 sm:bottom-16 bg-[#0A0A0A] border border-emerald-500/30 px-3 py-1.5 rounded text-[0.65rem] font-mono text-emerald-400 tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.1)] z-20 backdrop-blur-md">
+                      100%
+                    </div>
                   </div>
                 </div>
 
                 {/* CARD DE LINKS E RESUMO - ajuste posição, tamanho e conteúdo aqui */}
-                <aside className="mt-12 w-full max-w-2xl rounded-2xl border border-cyan-300/20 bg-slate-900/75 p-5 text-left shadow-[0_20px_55px_rgba(8,47,73,0.22)] ring-1 ring-emerald-300/10 backdrop-blur lg:mt-auto">
+                <aside className="mt-12 w-full max-w-2xl rounded-2xl border border-white/5 bg-white/[0.02] p-6 text-left shadow-xl backdrop-blur-md lg:mt-auto">
                   <h2 className={`text-xs font-semibold uppercase tracking-[0.24em] ${titulo_cor_opacidade}`}>
                     Links
                   </h2>
                   <div className="mt-3 grid gap-2 text-sm font-medium">
                     <a
                       href="https://www.linkedin.com/in/renzo-fernandes"
-                      className="cursor-pointer rounded-lg border border-slate-700/70 bg-slate-950/40 px-3 py-2 text-sky-300 underline underline-offset-4 transition duration-200 hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-200"
+                      className={`cursor-pointer rounded-lg px-4 py-2.5 text-zinc-300 group-hover:text-cyan-400 ${hover_card_azul}`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -699,7 +909,7 @@ function App() {
                     </a>
                     <a
                       href="https://github.com/RenzoFernandes"
-                      className="cursor-pointer rounded-lg border border-slate-700/70 bg-slate-950/40 px-3 py-2 text-sky-300 underline underline-offset-4 transition duration-200 hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-200"
+                      className={`cursor-pointer rounded-lg px-4 py-2.5 text-zinc-300 group-hover:text-cyan-400 ${hover_card_azul}`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -707,7 +917,7 @@ function App() {
                     </a>
                   </div>
 
-                  <div className="my-5 h-px w-full bg-gradient-to-r from-cyan-300/10 via-cyan-200/70 to-cyan-300/10 shadow-[0_0_14px_rgba(34,211,238,0.28)]" />
+                  <div className="my-6 h-px w-full bg-white/5" />
 
                   <h2 className={`text-xs font-semibold uppercase tracking-[0.24em] ${titulo_cor_opacidade}`}>
                     Resumo
@@ -723,20 +933,10 @@ function App() {
         </section>
 
         {/* SOBRE */}
-        <section id="sobre" className="border-b border-slate-800/60 py-14">
-          <div className={containerStyles}>
+        <section id="sobre" className="relative pt-8 pb-12">
+          <SectionBackground variant="blue" align="left" />
+          <div className={`relative z-10 ${containerStyles}`}>
             <AccordionSection id="sobre" title="Sobre">
-              <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className={`flex items-center gap-3 text-xl font-semibold ${titulo_cor_opacidade}`}>
-                    <span
-                      className="h-6 w-[3px] rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
-                      aria-hidden="true"
-                    />
-                    <span>Sobre mim</span>
-                  </h2>
-                </div>
-              </div>
               <div className="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2.2fr)]">
                 <div className={`space-y-4 text-sm ${texto_cor_opacidade}`}>
                   <p>
@@ -744,15 +944,15 @@ function App() {
                   </p>
                 </div>
                 <div className="grid gap-4">
-                  <div className="rounded-2xl border border-cyan-400/35 bg-slate-900/70 p-4">
-                    <h3 className={`mb-1 text-sm font-semibold ${titulo_cor_opacidade}`}>Como trabalho</h3>
-                    <p className={`text-sm ${texto_cor_opacidade}`}>
+                  <div className="rounded-2xl border border-white/5 bg-[#0A0A0A] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.05)] group">
+                    <h3 className={`mb-2 text-sm font-semibold transition-colors duration-300 group-hover:text-cyan-400 ${titulo_cor_opacidade}`}>Como trabalho</h3>
+                    <p className={`text-sm leading-relaxed ${texto_cor_opacidade}`}>
                       Organização, clareza e foco em evolução constante. Busco escrever código limpo, aprender rápido e colaborar com o time para entregar soluções eficientes.
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-cyan-400/35 bg-slate-900/70 p-4">
-                    <h3 className={`mb-1 text-sm font-semibold ${titulo_cor_opacidade}`}>O que busco</h3>
-                    <p className={`text-sm ${texto_cor_opacidade}`}>
+                  <div className="rounded-2xl border border-white/5 bg-[#0A0A0A] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.05)] group">
+                    <h3 className={`mb-2 text-sm font-semibold transition-colors duration-300 group-hover:text-cyan-400 ${titulo_cor_opacidade}`}>O que busco</h3>
+                    <p className={`text-sm leading-relaxed ${texto_cor_opacidade}`}>
                       Minha primeira oportunidade em tecnologia, em um ambiente onde eu possa aprender na prática, contribuir com o time e evoluir profissionalmente.
                     </p>
                   </div>
@@ -763,20 +963,10 @@ function App() {
         </section>
 
         {/* HABILIDADES */}
-        <section id="habilidades" className="border-y border-slate-800/60 py-14">
-          <div className={containerStyles}>
+        <section id="habilidades" className="relative pt-8 pb-12">
+          <SectionBackground variant="emerald" align="right" />
+          <div className={`relative z-10 ${containerStyles}`}>
             <AccordionSection id="habilidades" title="Habilidades">
-              <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className={`flex items-center gap-3 text-xl font-semibold ${titulo_cor_opacidade}`}>
-                    <span
-                      className="h-6 w-[3px] rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
-                      aria-hidden="true"
-                    />
-                    <span>Habilidades</span>
-                  </h2>
-                </div>
-              </div>
               <div className="grid gap-5 md:grid-cols-2">
                 {habilidadesBlocos.map((bloco) => (
                   <section key={bloco.titulo} className="min-w-0">
@@ -785,10 +975,10 @@ function App() {
                       {bloco.itens.map((item) => (
                         <li
                           key={item.nome}
-                          className={`flex h-12 items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-900/80 px-2.5 py-1.5 ${hover_card_azul}`}
+                          className={`flex h-12 items-center gap-2.5 rounded-xl border px-2.5 py-1.5 backdrop-blur-sm reveal ${hover_card_azul}`}
                         >
                           <span
-                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-sky-300/30 bg-slate-950/70 text-base text-sky-300"
+                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/5 bg-white/5 text-base"
                             style={{ color: item.cor }}
                             aria-hidden="true"
                           >
@@ -806,23 +996,17 @@ function App() {
         </section>
 
         {/* PROJETOS */}
-        <section id="projetos" className="py-14">
-          <div className={containerStyles}>
-            <AccordionSection id="projetos" title="Projetos">
-              <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className={`flex items-center gap-3 text-xl font-semibold ${titulo_cor_opacidade}`}>
-                    <span
-                      className="h-6 w-[3px] rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
-                      aria-hidden="true"
-                    />
-                    <span>Projetos</span>
-                  </h2>
-                </div>
-                <div className="flex items-center gap-2">
+        <section id="projetos" className="relative pt-8 pb-12">
+          <SectionBackground variant="purple" align="center" />
+          <div className={`relative z-10 ${containerStyles}`}>
+            <AccordionSection 
+              id="projetos" 
+              title="Projetos"
+              action={
+                <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/80 text-xl leading-none text-sky-300 transition duration-200 hover:border-sky-300/70 hover:bg-slate-800 hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-[#111] text-xl leading-none text-zinc-500 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[#222] hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                     aria-label="Projetos anteriores"
                     onClick={() => scrollProjetos('prev')}
                   >
@@ -830,17 +1014,18 @@ function App() {
                   </button>
                   <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-700/80 bg-slate-900/80 text-xl leading-none text-sky-300 transition duration-200 hover:border-sky-300/70 hover:bg-slate-800 hover:text-cyan-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-[#111] text-xl leading-none text-zinc-500 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[#222] hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                     aria-label="Próximos projetos"
                     onClick={() => scrollProjetos('next')}
                   >
                     ›
                   </button>
                 </div>
-              </div>
+              }
+            >
               <div
                 ref={projetosCarouselRef}
-                className="projects-carousel flex snap-x snap-mandatory gap-5 overflow-x-auto pt-2 pr-[22%] pb-3 md:pr-[16%] lg:pr-0"
+                className="projects-carousel flex snap-x snap-mandatory gap-6 overflow-x-auto overflow-y-hidden pt-4 pb-12 px-4 -mx-4 md:px-0 md:mx-0 md:pr-[16%] lg:pr-0"
                 onPointerDown={handleProjetosPointerDown}
                 onPointerMove={handleProjetosPointerMove}
                 onPointerUp={stopProjetosDrag}
@@ -849,27 +1034,31 @@ function App() {
                 onClickCapture={handleProjetosClickCapture}
                 onScroll={atualizarProjetoAtivo}
               >
-                {projetos.map((project) => (
+                {projetos.map((project, index) => (
                   <article
                     key={project.title}
-                    className="group relative flex min-h-[28.5rem] w-[91%] flex-none cursor-pointer snap-start self-stretch flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 shadow-soft-xl transition duration-200 hover:-translate-y-1 hover:border-sky-300/70 hover:bg-slate-950 hover:shadow-[0_0_24px_rgba(56,189,248,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)]"
+                    className="group relative flex h-[29rem] w-[91%] flex-none cursor-pointer snap-start flex-col overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] premium-card transition-all duration-500 hover:-translate-y-2 hover:border-zinc-600/50 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)] reveal"
+                    style={{ transitionDelay: `${index * 100}ms` }}
                     role="link"
                     tabIndex={0}
                     aria-label={`Abrir projeto ${project.title}`}
                     onClick={() => abrirProjeto(project.projectUrl)}
                     onKeyDown={(event) => handleProjetoKeyDown(event, project.projectUrl)}
                   >
-                    <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-sky-400/10 via-indigo-500/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-20" />
                     {project.image && (
-                      <img
-                        src={project.image}
-                        alt={`Imagem do projeto ${project.title}`}
-                        className="relative z-10 h-40 w-full object-cover"
-                      />
+                      <div className="relative h-44 w-full overflow-hidden border-b border-white/5">
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
+                        <img
+                          src={project.image}
+                          alt={`Imagem do projeto ${project.title}`}
+                          className="relative z-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        />
+                      </div>
                     )}
-                    <div className="relative z-10 flex flex-1 flex-col p-4">
+                    <div className="relative z-10 flex flex-1 flex-col p-5">
                       <header>
-                        <h3 className={`text-sm font-semibold ${titulo_cor_opacidade}`}>{project.title}</h3>
+                        <h3 className={`text-base font-semibold transition-colors duration-300 group-hover:text-white ${titulo_cor_opacidade}`}>{project.title}</h3>
                       </header>
                       <p className={`mt-3 min-h-[5rem] text-sm leading-relaxed ${texto_cor_opacidade}`}>
                         {project.description}
@@ -878,30 +1067,30 @@ function App() {
                         {project.technologies.map((technology) => (
                           <li
                             key={technology}
-                            className="rounded-full border border-slate-700/80 bg-slate-900/90 px-2.5 py-0.5 text-[0.7rem] text-slate-300"
+                            className="rounded-full border border-white/5 bg-white/[0.02] px-3 py-1 text-[0.7rem] font-medium text-zinc-400 transition-colors duration-300 group-hover:border-zinc-600/50 group-hover:text-zinc-200"
                           >
                             {technology}
                           </li>
                         ))}
                       </ul>
-                      <div className="mt-3 flex min-h-[1.25rem] text-xs text-sky-300">
-                        <span className="relative pb-px group-hover:text-sky-200">
-                          Abrir projeto
+                      <div className="mt-4 flex min-h-[1.25rem] text-xs font-semibold tracking-wide text-zinc-500 transition-colors duration-300 group-hover:text-white uppercase">
+                        <span className="relative pb-px">
+                          Explorar Case
                         </span>
                       </div>
                     </div>
                   </article>
                 ))}
               </div>
-              <div className="mt-6 flex justify-center gap-2" aria-label="Navegação dos projetos">
+              <div className="mt-0 flex justify-center gap-2" aria-label="Navegação dos projetos">
                 {Array.from({ length: totalPaginasProjetos }).map((_, index) => (
                   <button
                     key={`projetos-pagina-${index + 1}`}
                     type="button"
-                    className={`h-1.5 rounded-full transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 ${
+                    className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202] ${
                       paginaProjetoAtiva === index
-                        ? 'w-6 bg-sky-300 opacity-100 shadow-[0_0_12px_rgba(125,211,252,0.55)]'
-                        : 'w-2 bg-slate-600/80 opacity-60 hover:bg-sky-300/70 hover:opacity-90'
+                        ? 'w-6 bg-zinc-300 opacity-100 shadow-[0_0_12px_rgba(255,255,255,0.3)]'
+                        : 'w-2 bg-zinc-800 opacity-60 hover:bg-zinc-500 hover:opacity-100'
                     }`}
                     aria-label={`Ir para página ${index + 1} dos projetos`}
                     aria-current={paginaProjetoAtiva === index ? 'true' : undefined}
@@ -917,24 +1106,13 @@ function App() {
         </section>
 
         {/* FORMACAO & CERTIFICACOES */}
-        <section id="formacao" className="border-y border-slate-800/60 py-14">
-          <div className={containerStyles}>
+        <section id="formacao" className="relative pt-8 pb-12">
+          <SectionBackground variant="cyan" align="left" />
+          <div className={`relative z-10 ${containerStyles}`}>
             <AccordionSection id="formacao" title="Formação e Cursos">
-              <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className={`flex items-center gap-3 text-xl font-semibold ${titulo_cor_opacidade}`}>
-                    <span
-                      className="h-6 w-[3px] rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
-                      aria-hidden="true"
-                    />
-                    <span>Formação e Cursos</span>
-                  </h2>
-                </div>
-              </div>
-
               <div className="grid gap-5 md:grid-cols-3">
                 {/* EDITAR FORMACAO - faculdade, curso, status e periodo */}
-                <div className={`rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-soft-xl ${hover_card_azul}`}>
+                <div className={`rounded-2xl border p-4 shadow-sm backdrop-blur-sm reveal ${hover_card_azul}`}>
                   <h3 className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}>Formação</h3>
                   <div className={`space-y-5 text-sm ${texto_cor_opacidade}`}>
                     <div>
@@ -945,10 +1123,10 @@ function App() {
                         Universidade Santa Cecília (UNISANTA)
                       </p>
                       <p className={`text-xs ${texto_cor_opacidade}`}>
-                        2024-2027 - Previsão: Dez/2027 - 5º semestre
+                        2024-Cursando - Previsão: Dez/2028 - 5º semestre
                       </p>
                     </div>
-                    <div className="h-px w-full bg-slate-800/80" />
+                    <div className="h-px w-full bg-white/5" />
 
                     <div>
                       <p className={`font-medium ${titulo_cor_opacidade}`}>
@@ -958,14 +1136,14 @@ function App() {
                         Universidade Santa Cecília (UNISANTA)
                       </p>
                       <p className={`text-xs ${texto_cor_opacidade}`}>
-                        2026-2029 - Previsão: Dez/2029 - 1º semestre
+                        2026-Cursando - Previsão: Dez/2029 - 1º semestre
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* EDITAR CERTIFICACOES - nome do curso e instituicao */}
-                <div className={`rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-soft-xl ${hover_card_azul}`}>
+                <div className={`rounded-2xl border p-4 shadow-sm backdrop-blur-sm reveal ${hover_card_azul}`}>
                   <h3 className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}>Certificações e Cursos</h3>
                   <ul className={`space-y-2 text-sm ${texto_cor_opacidade}`}>
                     {certificacoesVisiveis.map((curso) => (
@@ -980,7 +1158,7 @@ function App() {
                   {temCertificacoesExtras && (
                     <button
                       type="button"
-                      className="mt-3 text-sm font-semibold text-sky-300 transition-colors hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                      className="mt-3 text-sm font-semibold text-slate-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                       onClick={() => setMostrarTodasCertificacoes((prev) => !prev)}
                     >
                       {mostrarTodasCertificacoes ? 'Ver menos' : 'Ver mais'}
@@ -989,7 +1167,7 @@ function App() {
                 </div>
 
                 {/* EDITAR IDIOMAS - idioma e nivel de proficiencia */}
-                <div className={`rounded-2xl border border-slate-800 bg-slate-900/80 p-4 shadow-soft-xl ${hover_card_azul}`}>
+                <div className={`rounded-2xl border p-4 shadow-sm backdrop-blur-sm reveal ${hover_card_azul}`}>
                   <h3 className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}>Idiomas</h3>
                   <ul className={`space-y-2 text-sm ${texto_cor_opacidade}`}>
                     <li><b>Português</b> - nativo</li>
@@ -1002,36 +1180,30 @@ function App() {
           </div>
         </section>
         {/* CONTATO */}
-        <section id="contato" className="py-14">
-          <div className={containerStyles}>
+        <section id="contato" className="relative pt-8 pb-12">
+          <SectionBackground variant="blue" align="center" />
+          <div className={`relative z-10 ${containerStyles}`}>
             <AccordionSection id="contato" title="Contato">
-              <div className="relative overflow-hidden rounded-2xl border border-cyan-400/35 bg-slate-950/80 p-2.5 shadow-[0_0_0_1px_rgba(56,189,248,0.08),0_0_32px_rgba(14,165,233,0.14)] ring-1 ring-sky-300/10 md:p-3">
-                <div className="pointer-events-none absolute -left-18 -top-18 h-56 w-56 rounded-full bg-sky-400/24 blur-3xl" />
-                <div className="pointer-events-none absolute -right-24 top-4 h-64 w-64 rounded-full bg-sky-500/28 blur-3xl" />
-                <div className="pointer-events-none absolute right-1/4 top-10 h-36 w-52 rounded-full bg-cyan-300/16 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-24 left-1/4 h-52 w-64 rounded-full bg-cyan-400/18 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-18 -right-12 h-48 w-48 rounded-full bg-blue-500/24 blur-3xl" />
-                <div className="pointer-events-none absolute bottom-8 right-1/3 h-28 w-44 rounded-full bg-blue-400/12 blur-3xl" />
-                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_28%,rgba(56,189,248,0.16),transparent_30%),radial-gradient(circle_at_78%_18%,rgba(59,130,246,0.18),transparent_32%),radial-gradient(circle_at_62%_82%,rgba(34,211,238,0.12),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.42),rgba(2,6,23,0.18))]" />
-                <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
-                <div className="pointer-events-none absolute bottom-6 left-8 h-20 w-20 rounded-full bg-cyan-400/10 blur-2xl" />
-                <div className="pointer-events-none absolute right-8 top-8 h-16 w-28 rounded-full bg-sky-500/10 blur-2xl" />
+              <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] p-2.5 premium-card md:p-3">
+                <div className="pointer-events-none absolute -left-18 -top-18 h-56 w-56 rounded-full bg-white/[0.02] blur-3xl" />
+                <div className="pointer-events-none absolute -right-24 top-4 h-64 w-64 rounded-full bg-white/[0.02] blur-3xl" />
+                <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                 <div className="relative grid min-h-[8rem] gap-5 md:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
                   <div className="flex flex-col justify-start pt-2 pl-4">
-                    <h2 className={`text-xl font-semibold ${titulo_cor_opacidade}`}>Vamos conversar?</h2>
-                    <p className={`mt-2 max-w-2xl text-xs leading-relaxed sm:text-sm ${texto_cor_opacidade}`}>
-                      Estou em busca da minha primeira oportunidade em tecnologia. Tenho interesse em desenvolvimento, dados e sistemas corporativos, com foco em aprender rápido, contribuir com o time e evoluir constantemente.
+                    <h2 className={`text-2xl font-bold tracking-tight ${titulo_cor_opacidade}`}>Vamos construir o futuro.</h2>
+                    <p className={`mt-3 max-w-2xl text-sm leading-relaxed ${texto_cor_opacidade}`}>
+                      Estou em busca da minha primeira oportunidade em tecnologia. Tenho profundo interesse em desenvolvimento, engenharia de dados e sistemas complexos, focado em agregar valor com código de alta qualidade e arquitetura impecável.
                     </p>
-                    <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                       <a
                         href="mailto:renzoheikivf@gmail.com"
-                        className="inline-flex items-center justify-center rounded-lg border border-cyan-200/50 bg-cyan-200/15 px-5 py-2.5 text-sm font-semibold text-cyan-100 shadow-[0_14px_35px_rgba(34,211,238,0.14)] backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-cyan-100/70 hover:bg-cyan-100/25 hover:text-white hover:shadow-[0_18px_45px_rgba(34,211,238,0.22)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                        className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-2.5 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                       >
                         Enviar e-mail
                       </a>
                       <a
                         href="https://github.com/RenzoFernandes"
-                        className="inline-flex items-center justify-center rounded-lg border border-cyan-300/35 bg-slate-900/70 px-5 py-2.5 text-sm font-semibold text-cyan-100 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-200/70 hover:bg-slate-800/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                        className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-2.5 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#222] hover:text-white hover:border-zinc-700/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -1039,7 +1211,7 @@ function App() {
                       </a>
                       <a
                         href="https://www.linkedin.com/in/renzo-fernandes"
-                        className="inline-flex items-center justify-center rounded-lg border border-cyan-300/35 bg-slate-900/70 px-5 py-2.5 text-sm font-semibold text-cyan-100 transition duration-200 hover:-translate-y-0.5 hover:border-cyan-200/70 hover:bg-slate-800/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                        className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-2.5 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#222] hover:text-white hover:border-zinc-700/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -1047,30 +1219,30 @@ function App() {
                       </a>
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-cyan-400/20 bg-slate-950/35 p-3">
-                    <h3 className={`text-sm font-semibold ${titulo_cor_opacidade}`}>Contato rápido</h3>
-                    <dl className="mt-2.5 text-xs sm:text-sm">
-                      <div className="grid gap-1 border-b border-cyan-400/15 py-2 text-sm font-medium text-slate-200 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
-                        <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-slate-400 opacity-70">
+                  <div className="rounded-2xl border border-white/5 bg-[#111]/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.02)] backdrop-blur-sm">
+                    <h3 className={`text-sm font-semibold tracking-wide ${titulo_cor_opacidade}`}>Contato rápido</h3>
+                    <dl className="mt-4 text-sm">
+                      <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
+                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
                           E-mail
                         </dt>
                         <dd className="break-all sm:col-start-2">
                           <a
                             href="mailto:renzoheikivf@gmail.com"
-                            className="text-sky-300 underline underline-offset-4 transition-colors hover:text-cyan-100"
+                            className="text-zinc-300 transition-colors hover:text-white"
                           >
                             renzoheikivf@gmail.com
                           </a>
                         </dd>
                       </div>
-                      <div className="grid gap-1 border-b border-cyan-400/15 py-2 text-sm font-medium text-slate-200 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
-                        <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-slate-400 opacity-70">
+                      <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
+                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
                           Telefone
                         </dt>
                         <dd className="sm:col-start-2">
                           <a
                             href="https://wa.me/5513997000096?text=Ol%C3%A1%20Renzo%2C%20vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20falar%20com%20voc%C3%AA."
-                            className="text-sky-300 underline underline-offset-4 transition-colors hover:text-cyan-100"
+                            className="text-zinc-300 transition-colors hover:text-white"
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -1078,15 +1250,15 @@ function App() {
                           </a>
                         </dd>
                       </div>
-                      <div className="grid gap-1 border-b border-cyan-400/15 py-2 text-sm font-medium text-slate-200 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
-                        <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-slate-400 opacity-70">
+                      <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
+                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
                           Local
                         </dt>
-                        <dd className="text-sky-300 sm:col-start-2">Santos - SP</dd>
+                        <dd className="text-zinc-300 sm:col-start-2">Santos - SP</dd>
                       </div>
                     </dl>
-                    <p className="mt-3 border-t border-cyan-400/15 pt-2.5 text-[0.7rem] text-slate-400">
-                      Aberto a oportunidades em tecnologia (presencial, híbrido ou remoto)
+                    <p className="mt-4 pt-2 text-xs font-medium text-zinc-500">
+                      Disponível para oportunidades (Presencial, Híbrido, Remoto).
                     </p>
                   </div>
                 </div>
@@ -1096,14 +1268,14 @@ function App() {
         </section>
       </main>
 
-      <footer className="border-t border-slate-800/60 bg-slate-950/95 py-6 text-sm text-slate-500">
+      <footer className="relative z-10 mt-auto border-t border-white/5 bg-black/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-black/40 py-8 text-sm text-zinc-500">
         <div className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${containerStyles}`}>
           <p>
             © {year ?? '____'} Renzo Fernandes. Todos os direitos reservados.
           </p>
           <a
             href="#hero"
-            className="font-medium text-cyan-200 underline underline-offset-4 transition-colors hover:text-cyan-100"
+            className="font-medium text-zinc-400 underline underline-offset-4 decoration-white/20 transition-all hover:text-cyan-400 hover:decoration-cyan-400/50"
           >
             Voltar ao topo
           </a>
