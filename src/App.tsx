@@ -231,9 +231,8 @@ function MobileMenu({ links }: MobileMenuProps) {
 
       <div
         id="mobile-menu-panel"
-        className={`absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border shadow-soft-xl backdrop-blur transition-all duration-200 ${headerStyles.menuPanel} ${
-          isOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-1 opacity-0'
-        }`}
+        className={`absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border shadow-soft-xl backdrop-blur transition-all duration-200 ${headerStyles.menuPanel} ${isOpen ? 'pointer-events-auto translate-y-0 opacity-100' : 'pointer-events-none -translate-y-1 opacity-0'
+          }`}
       >
         <nav className={`flex flex-col p-2 text-sm ${headerStyles.menuNav}`} aria-label="Menu mobile">
           {links.map((link) => (
@@ -327,7 +326,7 @@ function ParticlesBackground() {
 
   return (
     <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-[#020202]">
-      
+
       {/* 1. Camada de Glow (Ambient Light) - Unificada em variações de Cyan e Suavizada */}
       {/* Cyan Glow - Top Right */}
       <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-cyan-600/15 blur-[120px] animate-ambient-glow-1" />
@@ -342,10 +341,10 @@ function ParticlesBackground() {
 
       {/* 2. Camada de Grid Tecnológico (Quase invisível, esmaecido nas bordas) */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-70" />
-      
+
       {/* 3. Camada de Partículas (Poeira Digital) */}
       <canvas ref={canvasRef} className="absolute inset-0 opacity-80" />
-      
+
       {/* Vignette effect para fechar as bordas um pouco mais escuras e focar no conteúdo */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020202_150%)]" />
     </div>
@@ -359,22 +358,22 @@ type SectionBackgroundProps = {
 
 function SectionBackground({ align = 'center' }: SectionBackgroundProps) {
   // Ignoramos a prop variant para manter apenas a cor unificada (Cyan) com variações de intensidade
-  const glowColor = 
+  const glowColor =
     align === 'left' ? 'bg-cyan-400/10' :
-    align === 'right' ? 'bg-cyan-600/15' :
-    'bg-cyan-500/15'
+      align === 'right' ? 'bg-cyan-600/15' :
+        'bg-cyan-500/15'
 
-  const lampPosition = 
+  const lampPosition =
     align === 'left' ? 'top-[10%] left-[-10%] w-[600px] h-[600px]' :
-    align === 'right' ? 'top-[10%] right-[-10%] w-[600px] h-[600px]' :
-    'top-[10%] left-[50%] -translate-x-1/2 w-[600px] h-[600px]'
+      align === 'right' ? 'top-[10%] right-[-10%] w-[600px] h-[600px]' :
+        'top-[10%] left-[50%] -translate-x-1/2 w-[600px] h-[600px]'
 
   return (
     // Removido overflow-hidden para que as luzes se espalhem suavemente entre as seções sem corte reto
     <div className="absolute inset-0 z-0 pointer-events-none opacity-100">
       {/* Massive Background Lamp - Mais suave e com mais blur */}
       <div className={`absolute ${lampPosition} rounded-full blur-[130px] animate-ambient-glow-1 ${glowColor}`} />
-      
+
       {/* CSS Floating Particles (Cyan variations, muito suaves) */}
       <div className={`absolute top-[20%] left-[10%] w-1 h-1 rounded-full bg-cyan-300 animate-float-up opacity-30`} />
       <div className={`absolute top-[60%] right-[20%] w-[2px] h-[2px] rounded-full bg-cyan-500 animate-float-diagonal opacity-20`} style={{ animationDelay: '2s' }} />
@@ -390,13 +389,11 @@ function App() {
   const [mostrarTodasCertificacoes, setMostrarTodasCertificacoes] = useState(false)
   const [projetoAtivo, setProjetoAtivo] = useState(0)
   const [projetosPorPagina, setProjetosPorPagina] = useState(3)
-  const [autoplayProjetosPausado, setAutoplayProjetosPausado] = useState(false)
   const projetosCarouselRef = useRef<HTMLDivElement | null>(null)
   const isDraggingProjetosRef = useRef(false)
   const draggedProjetosRef = useRef(false)
   const dragStartXProjetosRef = useRef(0)
   const dragScrollLeftProjetosRef = useRef(0)
-  const resumeAutoplayProjetosRef = useRef<number | null>(null)
   const projetosPorPaginaAnteriorRef = useRef(3)
 
   // Lógica para Animações de Scroll com MutationObserver
@@ -412,20 +409,20 @@ function App() {
     }
     const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     const observer = new IntersectionObserver(observerCallback, observerOptions)
-    
+
     // Observar elementos existentes
     const observeElements = () => {
       const revealElements = document.querySelectorAll('.reveal:not(.active)')
       revealElements.forEach((el) => observer.observe(el))
     }
-    
+
     observeElements()
 
     // MutationObserver para garantir que elementos dinâmicos (como dentro do map ou carregados tardiamente) sejam animados
     const mutationObserver = new MutationObserver(() => {
       observeElements()
     })
-    
+
     mutationObserver.observe(document.body, { childList: true, subtree: true })
 
     return () => {
@@ -489,35 +486,19 @@ function App() {
       technologies: ['TypeScript', 'API REST', 'UX'],
       projectUrl: '#',
     },
-    
+
   ]
   const totalPaginasProjetos = Math.max(1, Math.ceil(projetos.length / projetosPorPagina))
   const paginaProjetoAtiva = Math.min(
     Math.floor(projetoAtivo / projetosPorPagina),
     totalPaginasProjetos - 1,
   )
-  const autoplayProjetosAtivo = projetosPorPagina < 3 && totalPaginasProjetos > 1
-
-  const pausarAutoplayProjetos = useCallback(() => {
-    if (resumeAutoplayProjetosRef.current) {
-      window.clearTimeout(resumeAutoplayProjetosRef.current)
-    }
-
-    setAutoplayProjetosPausado(true)
-    resumeAutoplayProjetosRef.current = window.setTimeout(() => {
-      setAutoplayProjetosPausado(false)
-      resumeAutoplayProjetosRef.current = null
-    }, 5000)
-  }, [])
-
   const scrollProjetos = (direction: 'prev' | 'next') => {
     const carousel = projetosCarouselRef.current
 
     if (!carousel) {
       return
     }
-
-    pausarAutoplayProjetos()
 
     const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth
     const scrollAmount = carousel.clientWidth * 0.82
@@ -610,7 +591,6 @@ function App() {
       return
     }
 
-    pausarAutoplayProjetos()
     draggedProjetosRef.current = false
     dragStartXProjetosRef.current = event.clientX
     dragScrollLeftProjetosRef.current = projetosCarouselRef.current.scrollLeft
@@ -698,35 +678,6 @@ function App() {
     irParaPaginaProjetos(paginaAtual)
   }, [irParaPaginaProjetos, projetoAtivo, projetosPorPagina, totalPaginasProjetos])
 
-  useEffect(() => {
-    if (!autoplayProjetosAtivo || autoplayProjetosPausado || isDraggingProjetosRef.current) {
-      return
-    }
-
-    const intervalId = window.setInterval(() => {
-      const nextPage = (paginaProjetoAtiva + 1) % totalPaginasProjetos
-      irParaPaginaProjetos(nextPage)
-    }, 6000)
-
-    return () => {
-      window.clearInterval(intervalId)
-    }
-  }, [
-    autoplayProjetosAtivo,
-    autoplayProjetosPausado,
-    irParaPaginaProjetos,
-    paginaProjetoAtiva,
-    totalPaginasProjetos,
-  ])
-
-  useEffect(() => {
-    return () => {
-      if (resumeAutoplayProjetosRef.current) {
-        window.clearTimeout(resumeAutoplayProjetosRef.current)
-      }
-    }
-  }, [])
-
   return (
     <div className="flex flex-col min-h-screen overflow-clip text-zinc-300 relative bg-black selection:bg-zinc-800 selection:text-white">
       <ParticlesBackground />
@@ -770,73 +721,73 @@ function App() {
           <div className={`relative z-10 ${containerStyles}`}>
             <div className="grid items-stretch gap-10 lg:grid-cols-[minmax(0,1.8fr)_minmax(0,1.2fr)]">
               <div className="order-1 flex min-w-0 max-w-4xl flex-col items-start text-left">
-              <div className="mb-6 inline-flex max-w-full items-center gap-3 reveal">
-                <div className="px-2 py-1 rounded border border-emerald-500/30 bg-emerald-500/10 text-[0.65rem] font-mono text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                  Disponível • Estágio / Júnior
+                <div className="mb-6 inline-flex max-w-full items-center gap-3 reveal">
+                  <div className="px-2 py-1 rounded border border-emerald-500/30 bg-emerald-500/10 text-[0.65rem] font-mono text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                    Disponível • Estágio / Júnior
+                  </div>
                 </div>
-              </div>
-              <h1 className="mb-6 leading-none reveal" style={{ transitionDelay: '100ms' }}>
-                <span className="block text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-[6rem] lg:text-[7rem] drop-shadow-[0_0_40px_rgba(255,255,255,0.1)]">
-                  Renzo Fernandes
-                </span>
-                <span className="block mt-5 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_4s_infinite]">
-                  Estudante de Sistemas de Informação
-                </span>
-              </h1>
-              {/* RESUMO PROFISSIONAL - edite o texto abaixo */}
-              <p className={`max-w-xl text-sm leading-relaxed sm:text-base reveal text-zinc-400 drop-shadow-md`} style={{ transitionDelay: '200ms' }}>
-                Busco minha primeira oportunidade em tecnologia, com interesse em desenvolvimento, dados e sistemas corporativos, aplicando a tecnologia na solução de problemas reais.
-              </p>
-              {/* BOTÕES DE AÇÃO - Hero */}
-              <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row reveal" style={{ transitionDelay: '300ms' }}>
-                <a
-                  href="#projetos"
-                  className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-3 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
-                >
-                  Ver Projetos
-                </a>
-                <a
-                  href="#contato"
-                  className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-zinc-700/50 hover:bg-[#222] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
-                >
-                  Contato
-                </a>
-              </div>
-              {/* CONTATO RÁPIDO - botões compridos no final da coluna esquerda */}
-              <div className="mt-6 grid w-full max-w-[38rem] gap-3 lg:mt-auto lg:pt-10">
-                <div
-                  className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center ${hover_card_azul}`}
-                >
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Local
+                <h1 className="mb-6 leading-none reveal" style={{ transitionDelay: '100ms' }}>
+                  <span className="block text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-[6rem] lg:text-[7rem] drop-shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                    Renzo Fernandes
                   </span>
-                  <span className="break-all text-slate-300 sm:col-start-2">
-                    Santos - SP
+                  <span className="block mt-5 text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_4s_infinite]">
+                    Estudante de Sistemas de Informação
                   </span>
+                </h1>
+                {/* RESUMO PROFISSIONAL - edite o texto abaixo */}
+                <p className={`max-w-xl text-sm leading-relaxed sm:text-base reveal text-zinc-400 drop-shadow-md`} style={{ transitionDelay: '100ms' }}>
+                  Busco minha primeira oportunidade em tecnologia, com interesse em desenvolvimento, dados e sistemas corporativos, aplicando a tecnologia na solução de problemas reais.
+                </p>
+                {/* BOTÕES DE AÇÃO - Hero */}
+                <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row reveal" style={{ transitionDelay: '100ms' }}>
+                  <a
+                    href="#projetos"
+                    className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-3 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                  >
+                    Ver Projetos
+                  </a>
+                  <a
+                    href="#contato"
+                    className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-zinc-700/50 hover:bg-[#222] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                  >
+                    Contato
+                  </a>
                 </div>
-                <a
-                  href="mailto:renzoheikivf@gmail.com"
-                  className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
-                >
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    E-mail
-                  </span>
-                  <span className="break-all text-slate-300 sm:col-start-2">
-                    renzoheikivf@gmail.com
-                  </span>
-                </a>
-                <a
-                  href="https://wa.me/5513997000096?text=Olá%20Renzo,%20vi%20seu%20portfólio%20e%20gostaria%20de%20falar%20com%20você."
-                  className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
-                >
-                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                    Telefone
-                  </span>
-                  <span className="text-slate-300 sm:col-start-2">
-                    (13) 99700-0096
-                  </span>
-                </a>
-              </div>
+                {/* CONTATO RÁPIDO - botões compridos no final da coluna esquerda */}
+                <div className="mt-6 grid w-full max-w-[38rem] gap-3 lg:mt-auto lg:pt-10">
+                  <div
+                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center ${hover_card_azul}`}
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Local
+                    </span>
+                    <span className="break-all text-slate-300 sm:col-start-2">
+                      Santos - SP
+                    </span>
+                  </div>
+                  <a
+                    href="mailto:renzoheikivf@gmail.com"
+                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      E-mail
+                    </span>
+                    <span className="break-all text-slate-300 sm:col-start-2">
+                      renzoheikivf@gmail.com
+                    </span>
+                  </a>
+                  <a
+                    href="https://wa.me/5513997000096?text=Olá%20Renzo,%20vi%20seu%20portfólio%20e%20gostaria%20de%20falar%20com%20você."
+                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Telefone
+                    </span>
+                    <span className="text-slate-300 sm:col-start-2">
+                      (13) 99700-0096
+                    </span>
+                  </a>
+                </div>
               </div>
 
               {/* FOTO DE PERFIL - para trocar, substitua o arquivo em src/assets/img/foto_perfil */}
@@ -844,50 +795,58 @@ function App() {
                 {/* INTERFACE CORE AVATAR - ADVANCED HUD */}
                 <div className="flex w-full max-w-2xl justify-center reveal py-12">
                   <div className="relative isolate inline-flex w-56 h-56 sm:w-72 sm:h-72 items-center justify-center mt-12 lg:mt-8 group">
-                    
-                    {/* Pulsing Core Aura */}
-                    <div className="absolute inset-0 rounded-full bg-cyan-500/10 blur-[60px] animate-pulse-glow pointer-events-none" />
 
-                    {/* Outer Tech Ring (Dashed) */}
-                    <div className="absolute inset-[-1.5rem] rounded-full border border-white/5 border-dashed animate-[spin_40s_linear_infinite] pointer-events-none" />
-                    
+                    {/* Pulsing Core Aura */}
+                    <div className="absolute inset-[-1.75rem] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(34,211,238,0.14),rgba(255,255,255,0.04)_34%,transparent_68%)] blur-2xl animate-avatar-ambient pointer-events-none" />
+                    <div className="absolute inset-[-3rem] rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.07),transparent_62%)] blur-[48px] pointer-events-none" />
+
+                    {/* Outer Tech Rings */}
+                    <div className="avatar-ring avatar-ring-outer absolute inset-[-1.5rem] rounded-full pointer-events-none" />
+                    <div className="avatar-ring avatar-ring-inner absolute inset-[-0.85rem] rounded-full pointer-events-none" />
+                    <div className="absolute inset-[-2.15rem] rounded-full border border-white/[0.04] border-dashed animate-avatar-orbit-slow pointer-events-none" />
+                    <div className="absolute inset-[-2.65rem] rounded-full border border-cyan-400/[0.08] border-dashed animate-avatar-orbit-reverse pointer-events-none" />
+
                     {/* Targeting Brackets (Corners) */}
                     <div className="absolute inset-[-2rem] pointer-events-none">
-                      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
-                      <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
-                      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-cyan-500/40 rounded-bl-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
-                      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-cyan-500/40 rounded-br-lg transition-all duration-500 group-hover:border-cyan-400 group-hover:translate-x-2 group-hover:translate-y-2 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.5)]" />
+                      <div className="avatar-corner avatar-corner-tl absolute top-0 left-0 w-8 h-8 border-t border-l border-cyan-400/35 rounded-tl-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:-translate-x-1 group-hover:-translate-y-1" />
+                      <div className="avatar-corner avatar-corner-tr absolute top-0 right-0 w-8 h-8 border-t border-r border-cyan-400/35 rounded-tr-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                      <div className="avatar-corner avatar-corner-bl absolute bottom-0 left-0 w-8 h-8 border-b border-l border-cyan-400/35 rounded-bl-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:-translate-x-1 group-hover:translate-y-1" />
+                      <div className="avatar-corner avatar-corner-br absolute bottom-0 right-0 w-8 h-8 border-b border-r border-cyan-400/35 rounded-br-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:translate-x-1 group-hover:translate-y-1" />
+                      <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full border border-cyan-300/30 bg-[#0A0A0A]/80 shadow-[0_0_12px_rgba(34,211,238,0.18)]" />
+                      <div className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full border border-white/15 bg-[#0A0A0A]/80" />
                     </div>
 
                     {/* Rotating Radar Sweep */}
-                    <div className="absolute inset-[-0.5rem] rounded-full animate-[spin_4s_linear_infinite] pointer-events-none [background:conic-gradient(from_0deg,transparent_0_280deg,rgba(34,211,238,0.1)_340deg,rgba(34,211,238,0.8)_360deg)] [mask-image:radial-gradient(ellipse_at_center,transparent_68%,black_70%)]" />
+                    <div className="absolute inset-[-0.5rem] rounded-full animate-avatar-sweep pointer-events-none [background:conic-gradient(from_0deg,transparent_0_292deg,rgba(255,255,255,0.04)_326deg,rgba(34,211,238,0.28)_360deg)] [mask-image:radial-gradient(ellipse_at_center,transparent_68%,black_70%)]" />
 
                     {/* Avatar Container */}
-                    <div className="relative w-full h-full rounded-full p-1.5 bg-[#0A0A0A] border border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.8)] z-10 cursor-crosshair overflow-hidden group-hover:border-cyan-500/30 transition-colors duration-500">
-                      <div className="relative w-full h-full rounded-full overflow-hidden bg-slate-900">
+                    <div className="relative w-full h-full rounded-full p-1.5 bg-[linear-gradient(145deg,rgba(255,255,255,0.16),rgba(10,10,10,0.96)_30%,rgba(34,211,238,0.16)_62%,rgba(10,10,10,0.98))] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_0_50px_rgba(0,0,0,0.8),0_0_34px_rgba(34,211,238,0.08)] z-10 cursor-crosshair overflow-hidden group-hover:border-cyan-500/30 transition-colors duration-500">
+                      <div className="relative w-full h-full rounded-full overflow-hidden bg-slate-900 ring-1 ring-white/10">
                         {/* Imagem */}
                         <img
                           src={fotoPerfil}
                           alt="Renzo Fernandes Core"
                           className="w-full h-full object-cover filter contrast-[1.15] saturate-50 group-hover:scale-110 group-hover:saturate-100 transition-all duration-700"
                         />
-                        
+
                         {/* Overlay Shadow para profundidade */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0A0A0A]/90 z-10 mix-blend-multiply pointer-events-none" />
-                        
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] via-transparent to-[#0A0A0A]/90 z-10 mix-blend-multiply pointer-events-none" />
+                        <div className="absolute inset-0 z-20 rounded-full border border-white/[0.07] shadow-[inset_0_0_28px_rgba(34,211,238,0.08),inset_0_-34px_52px_rgba(0,0,0,0.36)] pointer-events-none" />
+                        <div className="absolute inset-x-8 top-8 z-20 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-60 pointer-events-none" />
+
                         {/* Holographic Scanner Beam */}
-                        <div className="absolute inset-0 z-20 pointer-events-none animate-[scanner_3s_ease-in-out_infinite_alternate]">
-                          <div className="absolute left-[-25%] w-[150%] h-[2px] bg-cyan-400 shadow-[0_0_20px_#22d3ee,0_0_40px_#22d3ee]" />
-                          <div className="absolute left-0 w-full h-32 bg-gradient-to-t from-cyan-500/30 to-transparent opacity-60" style={{ bottom: '100%' }} />
+                        <div className="absolute inset-0 z-30 pointer-events-none animate-avatar-scan">
+                          <div className="absolute left-[-18%] w-[136%] h-px bg-gradient-to-r from-transparent via-cyan-300/75 to-transparent shadow-[0_0_14px_rgba(34,211,238,0.45)]" />
+                          <div className="absolute left-0 w-full h-20 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-70" style={{ bottom: '100%' }} />
                         </div>
                       </div>
                     </div>
 
                     {/* System Badges */}
-                    <div className="absolute -right-8 top-12 sm:-right-12 sm:top-16 bg-[#0A0A0A] border border-cyan-500/30 px-3 py-1.5 rounded text-[0.65rem] font-mono text-cyan-400 tracking-widest shadow-[0_0_15px_rgba(34,211,238,0.1)] z-20 backdrop-blur-md animate-pulse">
+                    <div className="absolute -right-8 top-12 sm:-right-12 sm:top-16 bg-[#0A0A0A]/80 border border-cyan-500/25 px-3 py-1.5 rounded text-[0.65rem] font-mono text-cyan-300/80 tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_15px_rgba(34,211,238,0.08)] z-20 backdrop-blur-md animate-avatar-float">
                       SYS.SYNC
                     </div>
-                    <div className="absolute -left-4 bottom-12 sm:-left-8 sm:bottom-16 bg-[#0A0A0A] border border-emerald-500/30 px-3 py-1.5 rounded text-[0.65rem] font-mono text-emerald-400 tracking-widest shadow-[0_0_15px_rgba(16,185,129,0.1)] z-20 backdrop-blur-md">
+                    <div className="absolute -left-4 bottom-12 sm:-left-8 sm:bottom-16 bg-[#0A0A0A]/80 border border-emerald-500/25 px-3 py-1.5 rounded text-[0.65rem] font-mono text-emerald-300/80 tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_15px_rgba(16,185,129,0.08)] z-20 backdrop-blur-md animate-avatar-float [animation-delay:1.4s]">
                       100%
                     </div>
                   </div>
@@ -940,7 +899,7 @@ function App() {
               <div className="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2.2fr)]">
                 <div className={`space-y-4 text-sm ${texto_cor_opacidade}`}>
                   <p>
-                    Sou estudante de Sistemas de Informação e também de Ciências Contábeis, com interesse em desenvolvimento de software, dados e sistemas corporativos.<br /><br />Desenvolvo projetos próprios com foco em resolver problemas reais, atuando tanto no front-end quanto no back-end, com integração de sistemas e manipulação de dados.<br /><br />Tenho experiência com tecnologias como JavaScript, React, Node.js, C#, .NET e Java, aplicando conceitos de desenvolvimento de aplicações, lógica de sistemas e integração com bancos de dados relacionais e não relacionais.<br /><br />Minha formação combinada em tecnologia e negócios me proporciona uma visão mais completa sobre sistemas corporativos, processos empresariais e análise de dados, especialmente em contextos que envolvem ERP e SAP.<br /><br />Busco minha primeira oportunidade em tecnologia como estagiário, com o objetivo de aprender na prática, contribuir com soluções que gerem valor real e evoluir profissionalmente.
+                    Sou estudante de Sistemas de Informação e Ciências Contábeis, formação dupla que une visão técnica e entendimento de processos de negócio, diferencial importante para atuar em desenvolvimento e suporte de sistemas corporativos.<br /><br />Desenvolvo projetos próprios com foco em resolver problemas reais, atuando tanto no front-end quanto no back-end, aplicando conceitos de desenvolvimento full stack, integração de sistemas, APIs e manipulação de dados.<br /><br />Possuo conhecimentos práticos em HTML, CSS, JavaScript, React, Node.js, C#, .NET, Java, SQL e MySQL, além de experiência com análise de dados utilizando Power BI. Também possuo formação em Mainframe (TSO/ZOWE) e atualmente estou em formação pelo SAP Learning Hub, aprofundando conhecimentos em sistemas ERP e tecnologias corporativas.<br /><br />Minha combinação entre tecnologia e negócios proporciona uma visão mais ampla sobre processos empresariais, análise de dados e soluções corporativas, especialmente em ambientes relacionados a ERP e SAP.<br /><br />Busco minha primeira oportunidade como estagiário em tecnologia para desenvolver experiência prática, contribuir com soluções que gerem valor real e evoluir profissionalmente em ambientes de inovação e aprendizado contínuo.
                   </p>
                 </div>
                 <div className="grid gap-4">
@@ -999,8 +958,8 @@ function App() {
         <section id="projetos" className="relative pt-8 pb-12">
           <SectionBackground variant="purple" align="center" />
           <div className={`relative z-10 ${containerStyles}`}>
-            <AccordionSection 
-              id="projetos" 
+            <AccordionSection
+              id="projetos"
               title="Projetos"
               action={
                 <div className="flex items-center gap-3">
@@ -1087,17 +1046,13 @@ function App() {
                   <button
                     key={`projetos-pagina-${index + 1}`}
                     type="button"
-                    className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202] ${
-                      paginaProjetoAtiva === index
+                    className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202] ${paginaProjetoAtiva === index
                         ? 'w-6 bg-zinc-300 opacity-100 shadow-[0_0_12px_rgba(255,255,255,0.3)]'
                         : 'w-2 bg-zinc-800 opacity-60 hover:bg-zinc-500 hover:opacity-100'
-                    }`}
+                      }`}
                     aria-label={`Ir para página ${index + 1} dos projetos`}
                     aria-current={paginaProjetoAtiva === index ? 'true' : undefined}
-                    onClick={() => {
-                      pausarAutoplayProjetos()
-                      irParaPaginaProjetos(index)
-                    }}
+                    onClick={() => irParaPaginaProjetos(index)}
                   />
                 ))}
               </div>

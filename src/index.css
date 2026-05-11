@@ -102,6 +102,102 @@
   }
   .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
 
+  @keyframes avatar-ambient {
+    0%, 100% { opacity: 0.6; transform: scale(0.96); }
+    50% { opacity: 0.95; transform: scale(1.04); }
+  }
+
+  @keyframes avatar-orbit-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes avatar-orbit-reverse {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+  }
+
+  @keyframes avatar-sweep {
+    from { transform: rotate(0deg); opacity: 0.55; }
+    50% { opacity: 0.85; }
+    to { transform: rotate(360deg); opacity: 0.55; }
+  }
+
+  @keyframes avatar-scan {
+    0% { top: 8%; opacity: 0; }
+    12% { opacity: 0.75; }
+    88% { opacity: 0.75; }
+    100% { top: 92%; opacity: 0; }
+  }
+
+  @keyframes avatar-corner-pulse {
+    0%, 100% { opacity: 0.55; filter: drop-shadow(0 0 0 rgba(34, 211, 238, 0)); }
+    50% { opacity: 0.95; filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.28)); }
+  }
+
+  @keyframes avatar-float {
+    0%, 100% { transform: translateY(0); opacity: 0.72; }
+    50% { transform: translateY(-3px); opacity: 0.95; }
+  }
+
+  .animate-avatar-ambient { animation: avatar-ambient 7s ease-in-out infinite; }
+  .animate-avatar-orbit-slow { animation: avatar-orbit-slow 56s linear infinite; }
+  .animate-avatar-orbit-reverse { animation: avatar-orbit-reverse 72s linear infinite; }
+  .animate-avatar-sweep { animation: avatar-sweep 18s linear infinite; }
+  .animate-avatar-scan { animation: avatar-scan 5.8s ease-in-out infinite; }
+  .animate-avatar-float { animation: avatar-float 5.5s ease-in-out infinite; }
+
+  .avatar-ring {
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow:
+      inset 0 0 20px rgba(255, 255, 255, 0.02),
+      0 0 28px rgba(34, 211, 238, 0.06);
+  }
+
+  .avatar-ring-outer {
+    animation: avatar-orbit-slow 64s linear infinite;
+    background:
+      conic-gradient(
+        from 12deg,
+        transparent 0deg 24deg,
+        rgba(34, 211, 238, 0.32) 24deg 31deg,
+        transparent 31deg 82deg,
+        rgba(255, 255, 255, 0.18) 82deg 88deg,
+        transparent 88deg 162deg,
+        rgba(34, 211, 238, 0.24) 162deg 170deg,
+        transparent 170deg 252deg,
+        rgba(255, 255, 255, 0.14) 252deg 258deg,
+        transparent 258deg 360deg
+      );
+    mask: radial-gradient(circle, transparent 69%, #000 70%, #000 72%, transparent 73%);
+  }
+
+  .avatar-ring-inner {
+    animation: avatar-orbit-reverse 48s linear infinite;
+    background:
+      conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.14) 0deg 8deg,
+        transparent 8deg 70deg,
+        rgba(34, 211, 238, 0.2) 70deg 78deg,
+        transparent 78deg 186deg,
+        rgba(255, 255, 255, 0.1) 186deg 193deg,
+        transparent 193deg 304deg,
+        rgba(34, 211, 238, 0.18) 304deg 312deg,
+        transparent 312deg 360deg
+      );
+    mask: radial-gradient(circle, transparent 67%, #000 68%, #000 71%, transparent 72%);
+  }
+
+  .avatar-corner {
+    animation: avatar-corner-pulse 6.5s ease-in-out infinite;
+    box-shadow: inset 0 0 10px rgba(34, 211, 238, 0.04);
+  }
+
+  .avatar-corner-tr { animation-delay: 0.8s; }
+  .avatar-corner-bl { animation-delay: 1.6s; }
+  .avatar-corner-br { animation-delay: 2.4s; }
+
   /* Background Ambient Glow Animations */
   @keyframes ambient-glow-1 {
     0%, 100% { opacity: 0.3; transform: scale(1) translate(0, 0); }
