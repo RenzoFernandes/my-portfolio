@@ -33,6 +33,3 @@ coverage/
 # System
 .DS_Store
 Thumbs.db
-
-# Img
-src/assets/
