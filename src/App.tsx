@@ -43,6 +43,7 @@ import menuOnlineImage from "./assets/img/menu on-line.jpg";
 import moraBeautyImage from "./assets/img/mora_beauty.png";
 import rotaGourmetImage from "./assets/img/rota_gourmet.png";
 import worldFilmImage from "./assets/img/world_film.png";
+import processHubImage from "./assets/img/process_hub.png";
 
 const headerStyles = {
   header:
@@ -499,17 +500,26 @@ function App() {
   ];
   const projetos = [
     {
-      title: "Menu On-line",
+      title: "ProcessHub",
       description:
-        "Aplicação web de cardápio digital para restaurantes, com navegação por categorias, renderização dinâmica de produtos e carrinho interativo para pedidos.",
-      technologies: ["HTML5", "CSS3", "JavaScript", "jQuery", "Bootstrap"],
-      image: menuOnlineImage,
-      projectUrl: "https://menu-on-line-mu.vercel.app/",
+        "Plataforma web de gerenciamento de processos e subprocessos com estrutura hierárquica, pipeline Kanban corporativo e organização operacional para equipes e departamentos.",
+      technologies: [
+        "React",
+        "TypeScript",
+        "Node.js",
+        "Express",
+        "Tailwind CSS",
+        "JWT",
+        "REST API",
+        "Vercel",
+      ],
+      image: processHubImage,
+      projectUrl: "https://process-hub-peach.vercel.app/auth",
     },
     {
       title: "Mora Beauty",
       description:
-        "Plataforma web para studio de beleza em Santos, com apresentação de serviços, fluxo de agendamento online, confirmação via Pix e gerenciamento de agendamentos.",
+        "Plataforma web para estúdio de beleza em Santos, com apresentação de serviços, agendamento online, confirmação via Pix e gestão de agendamentos.",
       technologies: ["React", "TypeScript", "Tailwind CSS", "UX/UI"],
       image: moraBeautyImage,
       projectUrl: "https://www.morabeauty.com.br/",
@@ -517,7 +527,7 @@ function App() {
     {
       title: "World Film",
       description:
-        "Site institucional para empresa de películas de controle solar, com catálogo de produtos, simulador de películas, sistema de garantia e captação de novos distribuidores.",
+        "Site institucional para empresa de películas de controle solar, com catálogo de produtos, simulador de películas, sistema de garantia e área dedicada a novos distribuidores.",
       technologies: ["WordPress", "PHP", "JavaScript", "UX/UI"],
       image: worldFilmImage,
       projectUrl: "https://worldfilm.com.br/",
@@ -525,10 +535,18 @@ function App() {
     {
       title: "Rota Gourmet",
       description:
-        "Plataforma web voltada para orçamentos gastronômicos, permitindo solicitação de serviços, organização de pedidos e experiência otimizada para clientes e fornecedores.",
+        "Plataforma web para solicitação e gestão de orçamentos gastronômicos, conectando clientes e fornecedores em uma experiência digital intuitiva e organizada.",
       technologies: ["React", "TypeScript", "Tailwind CSS", "Vercel"],
       image: rotaGourmetImage,
       projectUrl: "https://rota-gourmet.vercel.app/",
+    },
+    {
+      title: "Menu On-line",
+      description:
+        "Aplicação web de cardápio digital para restaurantes, com organização por categorias, experiência responsiva e carrinho interativo para realização de pedidos.",
+      technologies: ["HTML5", "CSS3", "JavaScript", "jQuery", "Bootstrap"],
+      image: menuOnlineImage,
+      projectUrl: "https://menu-on-line-mu.vercel.app/",
     },
   ];
   const totalPaginasProjetos = Math.max(
