@@ -44,6 +44,8 @@ import moraBeautyImage from "./assets/img/mora_beauty.png";
 import rotaGourmetImage from "./assets/img/rota_gourmet.png";
 import worldFilmImage from "./assets/img/world_film.png";
 import processHubImage from "./assets/img/process_hub.png";
+import { languageLabels, languages, useI18n } from "./i18n";
+import type { Language, Translation } from "./i18n";
 
 const headerStyles = {
   header:
@@ -71,17 +73,18 @@ type SkillItem = {
   nome: string;
   icone: IconType;
   cor?: string;
+  translationKey?: keyof Translation["skills"]["names"];
 };
 
 type SkillCategory = {
-  titulo: string;
+  tituloKey: keyof Translation["skills"]["categories"];
   itens: SkillItem[];
 };
 
 // EDITAR HABILIDADES - para acrescentar ou remover cards, altere apenas estas listas.
 const habilidadesBlocos: SkillCategory[] = [
   {
-    titulo: "Front-end",
+    tituloKey: "frontend",
     itens: [
       { nome: "HTML5", icone: SiHtml5, cor: "#e34f26" },
       { nome: "CSS3", icone: SiCss, cor: "#1572b6" },
@@ -94,11 +97,16 @@ const habilidadesBlocos: SkillCategory[] = [
     ],
   },
   {
-    titulo: "Back-end & Linguagens",
+    tituloKey: "backend",
     itens: [
       { nome: "Node.js", icone: SiNodedotjs, cor: "#5fa04e" },
       { nome: "Express", icone: SiExpress, cor: "#d8e6fd" },
-      { nome: "APIs REST", icone: SiOpenapiinitiative, cor: "#6ba539" },
+      {
+        nome: "APIs REST",
+        icone: SiOpenapiinitiative,
+        cor: "#6ba539",
+        translationKey: "restApis",
+      },
       { nome: ".NET", icone: SiDotnet, cor: "#512bd4" },
       { nome: "C#", icone: SiSharp, cor: "#239120" },
       { nome: "Java", icone: SiOpenjdk, cor: "#f89820" },
@@ -108,19 +116,29 @@ const habilidadesBlocos: SkillCategory[] = [
     ],
   },
   {
-    titulo: "Dados & Banco de Dados",
+    tituloKey: "data",
     itens: [
       { nome: "SQL", icone: SiMysql, cor: "#4479a1" },
       { nome: "NoSQL", icone: SiMongodb, cor: "#47a248" },
       { nome: "PostgreSQL", icone: SiPostgresql, cor: "#4169e1" },
       { nome: "Neon", icone: SiPostgresql, cor: "#00e599" },
       { nome: "MongoDB", icone: SiMongodb, cor: "#47a248" },
-      { nome: "Modelagem de Dados", icone: SiDbt, cor: "#ff694b" },
-      { nome: "Administração de Dados", icone: SiDbeaver, cor: "#38bdf8" },
+      {
+        nome: "Modelagem de Dados",
+        icone: SiDbt,
+        cor: "#ff694b",
+        translationKey: "dataModeling",
+      },
+      {
+        nome: "Administração de Dados",
+        icone: SiDbeaver,
+        cor: "#38bdf8",
+        translationKey: "dataAdministration",
+      },
     ],
   },
   {
-    titulo: "Ferramentas",
+    tituloKey: "tools",
     itens: [
       { nome: "Git", icone: SiGit, cor: "#f05032" },
       { nome: "GitHub", icone: SiGithub, cor: "#d8e6fd" },
@@ -131,7 +149,7 @@ const habilidadesBlocos: SkillCategory[] = [
     ],
   },
   {
-    titulo: "Sistemas Corporativos",
+    tituloKey: "enterprise",
     itens: [
       { nome: "SAP", icone: SiSap, cor: "#0faaff" },
       { nome: "ERP", icone: SiErpnext, cor: "#38bdf8" },
@@ -140,27 +158,21 @@ const habilidadesBlocos: SkillCategory[] = [
     ],
   },
   {
-    titulo: "Automação & IA",
+    tituloKey: "automation",
     itens: [
-      { nome: "Automação com Python", icone: SiRobotframework, cor: "#00c0b5" },
-      { nome: "IA Generativa", icone: SiOpenai, cor: "#d8e6fd" },
+      {
+        nome: "Automação com Python",
+        icone: SiRobotframework,
+        cor: "#00c0b5",
+        translationKey: "automationPython",
+      },
+      {
+        nome: "IA Generativa",
+        icone: SiOpenai,
+        cor: "#d8e6fd",
+        translationKey: "generativeAi",
+      },
     ],
-  },
-];
-
-// EDITAR CERTIFICAÇÕES E CURSOS - adicione, remova ou altere nome e instituição.
-const certificacoesCursos = [
-  {
-    nome: "Desenvolvimento Front-end",
-    instituicao: "Unisanta • 2025",
-  },
-  {
-    nome: "Desenvolvimento Back-end",
-    instituicao: "Unisanta • 2026",
-  },
-  {
-    nome: "Administração de Dados",
-    instituicao: "Unisanta • 2026",
   },
 ];
 
@@ -214,9 +226,10 @@ function AccordionSection({ title, action, children }: AccordionSectionProps) {
 
 type MobileMenuProps = {
   links: Array<{ label: string; href: string }>;
+  menu: Translation["menu"];
 };
 
-function MobileMenu({ links }: MobileMenuProps) {
+function MobileMenu({ links, menu }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleNavigate = (href: string) => {
@@ -236,10 +249,10 @@ function MobileMenu({ links }: MobileMenuProps) {
         className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent ${headerStyles.menuButton}`}
         aria-expanded={isOpen}
         aria-controls="mobile-menu-panel"
-        aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+        aria-label={isOpen ? menu.close : menu.open}
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span className="sr-only">Menu</span>
+        <span className="sr-only">{menu.label}</span>
         <span className="flex flex-col gap-1.5" aria-hidden="true">
           <span
             className={`h-0.5 w-5 rounded bg-current transition-transform ${isOpen ? "translate-y-2 rotate-45" : ""}`}
@@ -263,7 +276,7 @@ function MobileMenu({ links }: MobileMenuProps) {
       >
         <nav
           className={`flex flex-col p-2 text-sm ${headerStyles.menuNav}`}
-          aria-label="Menu mobile"
+          aria-label={menu.label}
         >
           {links.map((link) => (
             <a
@@ -280,6 +293,45 @@ function MobileMenu({ links }: MobileMenuProps) {
           ))}
         </nav>
       </div>
+    </div>
+  );
+}
+
+type LanguageSwitcherProps = {
+  language: Language;
+  label: string;
+  options: Translation["language"]["options"];
+  onChange: (language: Language) => void;
+};
+
+function LanguageSwitcher({
+  language,
+  label,
+  options,
+  onChange,
+}: LanguageSwitcherProps) {
+  return (
+    <div
+      className="inline-flex rounded-lg border border-white/10 bg-zinc-900/50 p-0.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-zinc-400 backdrop-blur-md"
+      aria-label={label}
+      role="group"
+    >
+      {languages.map((option) => (
+        <button
+          key={option}
+          type="button"
+          className={`rounded-md px-2.5 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
+            language === option
+              ? "bg-white/10 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]"
+              : "hover:bg-white/5 hover:text-zinc-200"
+          }`}
+          aria-label={options[option]}
+          aria-pressed={language === option}
+          onClick={() => onChange(option)}
+        >
+          {languageLabels[option]}
+        </button>
+      ))}
     </div>
   );
 }
@@ -437,6 +489,7 @@ function SectionBackground({ align = "center" }: SectionBackgroundProps) {
 }
 
 function App() {
+  const { language, setLanguage, t } = useI18n();
   const year = useCurrentYear();
   const [mostrarTodasCertificacoes, setMostrarTodasCertificacoes] =
     useState(false);
@@ -486,23 +539,23 @@ function App() {
       mutationObserver.disconnect();
     };
   }, []);
+  const certificacoesCursos = t.education.certifications;
   const temCertificacoesExtras = certificacoesCursos.length > 5;
   const certificacoesVisiveis =
     temCertificacoesExtras && !mostrarTodasCertificacoes
       ? certificacoesCursos.slice(0, 5)
       : certificacoesCursos;
   const navLinks = [
-    { label: "Sobre", href: "#sobre" },
-    { label: "Habilidades", href: "#habilidades" },
-    { label: "Projetos", href: "#projetos" },
-    { label: "Formação", href: "#formacao" },
-    { label: "Contato", href: "#contato" },
+    { label: t.nav.about, href: "#sobre" },
+    { label: t.nav.skills, href: "#habilidades" },
+    { label: t.nav.projects, href: "#projetos" },
+    { label: t.nav.education, href: "#formacao" },
+    { label: t.nav.contact, href: "#contato" },
   ];
   const projetos = [
     {
-      title: "ProcessHub",
-      description:
-        "Plataforma web de gerenciamento de processos e subprocessos com estrutura hierárquica, pipeline Kanban corporativo e organização operacional para equipes e departamentos.",
+      title: t.projects.items.processHub.title,
+      description: t.projects.items.processHub.description,
       technologies: [
         "React",
         "TypeScript",
@@ -518,33 +571,29 @@ function App() {
       projectUrl: "https://process-hub-peach.vercel.app/auth",
     },
     {
-      title: "Mora Beauty",
-      description:
-        "Plataforma web para estúdio de beleza em Santos, com apresentação de serviços, agendamento online, confirmação via Pix e gestão de agendamentos.",
+      title: t.projects.items.moraBeauty.title,
+      description: t.projects.items.moraBeauty.description,
       technologies: ["React", "TypeScript", "Tailwind CSS", "UX/UI"],
       image: moraBeautyImage,
       projectUrl: "https://www.morabeauty.com.br/",
     },
     {
-      title: "World Film",
-      description:
-        "Site institucional para empresa de películas de controle solar, com catálogo de produtos, simulador de películas, sistema de garantia e área dedicada a novos distribuidores.",
+      title: t.projects.items.worldFilm.title,
+      description: t.projects.items.worldFilm.description,
       technologies: ["WordPress", "PHP", "JavaScript", "UX/UI"],
       image: worldFilmImage,
       projectUrl: "https://worldfilm.com.br/",
     },
     {
-      title: "Rota Gourmet",
-      description:
-        "Plataforma web para solicitação e gestão de orçamentos gastronômicos, conectando clientes e fornecedores em uma experiência digital intuitiva e organizada.",
+      title: t.projects.items.rotaGourmet.title,
+      description: t.projects.items.rotaGourmet.description,
       technologies: ["React", "TypeScript", "Tailwind CSS", "Vercel"],
       image: rotaGourmetImage,
       projectUrl: "https://rota-gourmet.vercel.app/",
     },
     {
-      title: "Menu On-line",
-      description:
-        "Aplicação web de cardápio digital para restaurantes, com organização por categorias, experiência responsiva e carrinho interativo para realização de pedidos.",
+      title: t.projects.items.menuOnline.title,
+      description: t.projects.items.menuOnline.description,
       technologies: ["HTML5", "CSS3", "JavaScript", "jQuery", "Bootstrap"],
       image: menuOnlineImage,
       projectUrl: "https://menu-on-line-mu.vercel.app/",
@@ -786,7 +835,7 @@ function App() {
           <div className="flex items-center gap-3 sm:gap-5">
             <nav
               className={`hidden items-center gap-7 text-sm font-medium sm:flex ${headerStyles.nav}`}
-              aria-label="Navegação principal"
+              aria-label={t.nav.main}
             >
               {navLinks.map((link) => (
                 <a
@@ -798,7 +847,13 @@ function App() {
                 </a>
               ))}
             </nav>
-            <MobileMenu links={navLinks} />
+            <LanguageSwitcher
+              language={language}
+              label={t.language.label}
+              options={t.language.options}
+              onChange={setLanguage}
+            />
+            <MobileMenu links={navLinks} menu={t.menu} />
           </div>
         </div>
         <div
@@ -816,7 +871,7 @@ function App() {
               <div className="order-1 flex min-w-0 max-w-4xl flex-col items-start text-left">
                 <div className="mb-6 inline-flex max-w-full items-center gap-3 reveal">
                   <div className="px-2 py-1 rounded border border-emerald-500/30 bg-emerald-500/10 text-[0.65rem] font-mono text-emerald-400 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                    Disponível • Estágio / Júnior
+                    {t.hero.status}
                   </div>
                 </div>
                 <h1
@@ -827,7 +882,8 @@ function App() {
                     Renzo Fernandes
                   </span>
                   <span className="block mt-5 pb-1 text-2xl font-bold leading-[1.15] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_4s_infinite]">
-                    Full Stack <br /> Software Engineer
+                    {t.hero.role.split(" ").slice(0, 2).join(" ")} <br />{" "}
+                    {t.hero.role.split(" ").slice(2).join(" ")}
                   </span>
                 </h1>
                 {/* RESUMO PROFISSIONAL - edite o texto abaixo */}
@@ -835,9 +891,7 @@ function App() {
                   className={`max-w-xl text-sm leading-relaxed sm:text-base reveal text-zinc-400 drop-shadow-md`}
                   style={{ transitionDelay: "100ms" }}
                 >
-                  Busco minha primeira oportunidade em tecnologia, com interesse
-                  em desenvolvimento, dados e sistemas corporativos, aplicando a
-                  tecnologia na solução de problemas reais.
+                  {t.hero.summary}
                 </p>
                 {/* BOTÕES DE AÇÃO - Hero */}
                 <div
@@ -848,13 +902,13 @@ function App() {
                     href="#projetos"
                     className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-3 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                   >
-                    Ver Projetos
+                    {t.hero.viewProjects}
                   </a>
                   <a
                     href="#contato"
                     className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-zinc-700/50 hover:bg-[#222] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                   >
-                    Contato
+                    {t.hero.contact}
                   </a>
                 </div>
                 {/* CONTATO RÁPIDO - botões compridos no final da coluna esquerda */}
@@ -863,10 +917,10 @@ function App() {
                     className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center ${hover_card_azul}`}
                   >
                     <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Local
+                      {t.hero.locationLabel}
                     </span>
                     <span className="break-all text-slate-300 sm:col-start-2">
-                      São Paulo
+                      {t.hero.location}
                     </span>
                   </div>
                   <a
@@ -874,18 +928,18 @@ function App() {
                     className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
                   >
                     <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      E-mail
+                      {t.hero.emailLabel}
                     </span>
                     <span className="break-all text-slate-300 sm:col-start-2">
                       renzoheikivf@gmail.com
                     </span>
                   </a>
                   <a
-                    href="https://wa.me/5513997000096?text=Olá%20Renzo,%20vi%20seu%20portfólio%20e%20gostaria%20de%20falar%20com%20você."
+                    href={`https://wa.me/5513997000096?text=${encodeURIComponent(t.contact.whatsappMessage)}`}
                     className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
                   >
                     <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                      Telefone
+                      {t.hero.phoneLabel}
                     </span>
                     <span className="text-slate-300 sm:col-start-2">
                       (13) 99700-0096
@@ -928,7 +982,7 @@ function App() {
                         {/* Imagem */}
                         <img
                           src={fotoPerfil}
-                          alt="Renzo Fernandes Core"
+                          alt={t.hero.profileAlt}
                           className="w-full h-full object-cover filter contrast-[1.15] saturate-50 group-hover:scale-110 group-hover:saturate-100 transition-all duration-700"
                         />
 
@@ -963,7 +1017,7 @@ function App() {
                   <h2
                     className={`text-xs font-semibold uppercase tracking-[0.24em] ${titulo_cor_opacidade}`}
                   >
-                    Links
+                    {t.hero.linksTitle}
                   </h2>
                   <div className="mt-3 grid gap-2 text-sm font-medium">
                     <a
@@ -989,16 +1043,12 @@ function App() {
                   <h2
                     className={`text-xs font-semibold uppercase tracking-[0.24em] ${titulo_cor_opacidade}`}
                   >
-                    Resumo
+                    {t.hero.summaryTitle}
                   </h2>
                   <p
                     className={`mt-3 text-sm leading-6 ${texto_cor_opacidade}`}
                   >
-                    Profissional em formação em Sistemas de Informação (5º
-                    semestre), com experiência em projetos de desenvolvimento,
-                    perfil analítico e rápida capacidade de aprendizado.
-                    Interesse em desenvolvimento full stack, sistemas
-                    corporativos e tecnologia aplicada a negócios.
+                    {t.hero.cardSummary}
                   </p>
                 </aside>
               </div>
@@ -1010,68 +1060,36 @@ function App() {
         <section id="sobre" className="relative pt-8 pb-12">
           <SectionBackground variant="blue" align="left" />
           <div className={`relative z-10 ${containerStyles}`}>
-            <AccordionSection id="sobre" title="Sobre">
+            <AccordionSection id="sobre" title={t.sections.about}>
               <div className="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2.2fr)]">
                 <div className={`space-y-4 text-sm ${texto_cor_opacidade}`}>
-                  <p>
-                    Profissional em formação em Sistemas de Informação, com
-                    futura formação dupla em Ciências Contábeis, unindo
-                    tecnologia, análise de dados e visão estratégica de negócios
-                    para atuar no desenvolvimento de soluções corporativas,
-                    automação de processos e sistemas escaláveis.
-                    <br />
-                    <br />
-                    Possuo experiência no desenvolvimento de projetos full
-                    stack, APIs REST, integrações de sistemas, modelagem de
-                    bancos de dados e aplicações web, utilizando tecnologias
-                    como JavaScript, TypeScript, React, Node.js, C# (.NET),
-                    Java, SQL e MySQL.
-                    <br />
-                    <br />
-                    Atuo também com análise de dados e geração de insights
-                    através do Power BI, além de conhecimentos em ambientes
-                    Mainframe IBM (TSO/ZOWE) e tecnologias corporativas voltadas
-                    a ERP e integração de processos empresariais, com formação
-                    complementar pelo SAP Learning Hub.
-                    <br />
-                    <br />
-                    Tenho perfil analítico, foco em resolução de problemas e
-                    facilidade em conectar tecnologia às necessidades do
-                    negócio, contribuindo para o desenvolvimento de soluções
-                    eficientes, organizadas e com impacto real. Busco atuar em
-                    ambientes que valorizem inovação, aprendizado contínuo,
-                    colaboração e evolução profissional constante.
-                  </p>
+                  {t.about.body.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
                 </div>
                 <div className="grid gap-4">
                   <div className="rounded-2xl border border-white/5 bg-[#0A0A0A] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.05)] group">
                     <h3
                       className={`mb-2 text-sm font-semibold transition-colors duration-300 group-hover:text-cyan-400 ${titulo_cor_opacidade}`}
                     >
-                      Como trabalho
+                      {t.about.howTitle}
                     </h3>
                     <p
                       className={`text-sm leading-relaxed ${texto_cor_opacidade}`}
                     >
-                      Atuo com organização, clareza e foco em melhoria contínua.
-                      Valorizo código limpo, aprendizado constante e colaboração
-                      em equipe para desenvolver soluções eficientes e
-                      escaláveis.
+                      {t.about.howText}
                     </p>
                   </div>
                   <div className="rounded-2xl border border-white/5 bg-[#0A0A0A] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.05)] group">
                     <h3
                       className={`mb-2 text-sm font-semibold transition-colors duration-300 group-hover:text-cyan-400 ${titulo_cor_opacidade}`}
                     >
-                      O que busco
+                      {t.about.goalTitle}
                     </h3>
                     <p
                       className={`text-sm leading-relaxed ${texto_cor_opacidade}`}
                     >
-                      Busco minha primeira oportunidade em tecnologia para
-                      adquirir experiência prática, contribuir com projetos
-                      reais e evoluir profissionalmente em um ambiente de
-                      inovação e aprendizado contínuo.
+                      {t.about.goalText}
                     </p>
                   </div>
                 </div>
@@ -1084,14 +1102,14 @@ function App() {
         <section id="habilidades" className="relative pt-8 pb-12">
           <SectionBackground variant="emerald" align="right" />
           <div className={`relative z-10 ${containerStyles}`}>
-            <AccordionSection id="habilidades" title="Habilidades">
+            <AccordionSection id="habilidades" title={t.sections.skills}>
               <div className="grid gap-5 md:grid-cols-2">
                 {habilidadesBlocos.map((bloco) => (
-                  <section key={bloco.titulo} className="min-w-0">
+                  <section key={bloco.tituloKey} className="min-w-0">
                     <h3
                       className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}
                     >
-                      {bloco.titulo}
+                      {t.skills.categories[bloco.tituloKey]}
                     </h3>
                     <ul className="grid auto-rows-fr grid-cols-[repeat(auto-fill,minmax(9.5rem,9.5rem))] gap-3 sm:grid-cols-[repeat(auto-fill,minmax(10.5rem,10.5rem))] lg:grid-cols-[repeat(3,minmax(0,10.5rem))]">
                       {bloco.itens.map((item) => (
@@ -1109,7 +1127,9 @@ function App() {
                           <span
                             className={`min-w-0 text-sm ${texto_cor_opacidade}`}
                           >
-                            {item.nome}
+                            {item.translationKey
+                              ? t.skills.names[item.translationKey]
+                              : item.nome}
                           </span>
                         </li>
                       ))}
@@ -1127,13 +1147,13 @@ function App() {
           <div className={`relative z-10 ${containerStyles}`}>
             <AccordionSection
               id="projetos"
-              title="Projetos"
+              title={t.sections.projects}
               action={
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-[#111] text-xl leading-none text-zinc-500 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[#222] hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                    aria-label="Projetos anteriores"
+                    aria-label={t.projects.controls.previous}
                     onClick={() => scrollProjetos("prev")}
                   >
                     ‹
@@ -1141,7 +1161,7 @@ function App() {
                   <button
                     type="button"
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-[#111] text-xl leading-none text-zinc-500 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[#222] hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                    aria-label="Próximos projetos"
+                    aria-label={t.projects.controls.next}
                     onClick={() => scrollProjetos("next")}
                   >
                     ›
@@ -1167,7 +1187,7 @@ function App() {
                     style={{ transitionDelay: `${index * 100}ms` }}
                     role="link"
                     tabIndex={0}
-                    aria-label={`Abrir projeto ${project.title}`}
+                    aria-label={`${t.projects.controls.openProject} ${project.title}`}
                     onClick={() => abrirProjeto(project.projectUrl)}
                     onKeyDown={(event) =>
                       handleProjetoKeyDown(event, project.projectUrl)
@@ -1180,7 +1200,7 @@ function App() {
                           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
                           <img
                             src={project.image}
-                            alt={`Imagem do projeto ${project.title}`}
+                            alt={t.projects.controls.imageAlt(project.title)}
                             className="relative z-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
                           />
                         </>
@@ -1214,7 +1234,9 @@ function App() {
                           ))}
                         </ul>
                         <div className="mt-2 flex min-h-[1.25rem] text-xs font-semibold tracking-wide text-zinc-500 transition-colors duration-300 group-hover:text-white uppercase">
-                          <span className="relative pb-px">Abrir Projeto</span>
+                          <span className="relative pb-px">
+                            {t.projects.controls.open}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1223,7 +1245,7 @@ function App() {
               </div>
               <div
                 className="mt-0 flex justify-center gap-2"
-                aria-label="Navegação dos projetos"
+                aria-label={t.projects.controls.navigation}
               >
                 {Array.from({ length: totalPaginasProjetos }).map(
                   (_, index) => (
@@ -1235,7 +1257,7 @@ function App() {
                           ? "w-6 bg-zinc-300 opacity-100 shadow-[0_0_12px_rgba(255,255,255,0.3)]"
                           : "w-2 bg-zinc-800 opacity-60 hover:bg-zinc-500 hover:opacity-100"
                       }`}
-                      aria-label={`Ir para página ${index + 1} dos projetos`}
+                      aria-label={t.projects.controls.page(index + 1)}
                       aria-current={
                         paginaProjetoAtiva === index ? "true" : undefined
                       }
@@ -1252,7 +1274,7 @@ function App() {
         <section id="formacao" className="relative pt-8 pb-12">
           <SectionBackground variant="cyan" align="left" />
           <div className={`relative z-10 ${containerStyles}`}>
-            <AccordionSection id="formacao" title="Formação e Cursos">
+            <AccordionSection id="formacao" title={t.sections.education}>
               <div className="grid gap-5 md:grid-cols-3">
                 {/* EDITAR FORMACAO - faculdade, curso, status e periodo */}
                 <div
@@ -1261,33 +1283,25 @@ function App() {
                   <h3
                     className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}
                   >
-                    Formação
+                    {t.education.formationTitle}
                   </h3>
                   <div className={`space-y-5 text-sm ${texto_cor_opacidade}`}>
-                    <div>
-                      <p className={`font-medium ${titulo_cor_opacidade}`}>
-                        Bacharelado em Sistemas de Informação
-                      </p>
-                      <p className={texto_cor_opacidade}>
-                        Universidade Santa Cecília (UNISANTA)
-                      </p>
-                      <p className={`text-xs ${texto_cor_opacidade}`}>
-                        2024-Cursando - Previsão: Dez/2028 - 5º semestre
-                      </p>
-                    </div>
-                    <div className="h-px w-full bg-white/5" />
-
-                    <div>
-                      <p className={`font-medium ${titulo_cor_opacidade}`}>
-                        Bacharelado em Ciências Contábeis
-                      </p>
-                      <p className={texto_cor_opacidade}>
-                        Universidade Santa Cecília (UNISANTA)
-                      </p>
-                      <p className={`text-xs ${texto_cor_opacidade}`}>
-                        2026-Cursando - Previsão: Dez/2029 - 1º semestre
-                      </p>
-                    </div>
+                    {t.education.degrees.map((degree, index) => (
+                      <div key={degree.name}>
+                        <p className={`font-medium ${titulo_cor_opacidade}`}>
+                          {degree.name}
+                        </p>
+                        <p className={texto_cor_opacidade}>
+                          {degree.institution}
+                        </p>
+                        <p className={`text-xs ${texto_cor_opacidade}`}>
+                          {degree.period}
+                        </p>
+                        {index < t.education.degrees.length - 1 && (
+                          <div className="mt-5 h-px w-full bg-white/5" />
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -1298,14 +1312,14 @@ function App() {
                   <h3
                     className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}
                   >
-                    Certificações e Cursos
+                    {t.education.certificationsTitle}
                   </h3>
                   <ul className={`space-y-2 text-sm ${texto_cor_opacidade}`}>
                     {certificacoesVisiveis.map((curso) => (
-                      <li key={`${curso.nome}-${curso.instituicao}`}>
+                      <li key={`${curso.name}-${curso.institution}`}>
                         <p className={texto_cor_opacidade}>
-                          <span className="font-semibold">{curso.nome}</span>
-                          <span> - {curso.instituicao}</span>
+                          <span className="font-semibold">{curso.name}</span>
+                          <span> - {curso.institution}</span>
                         </p>
                       </li>
                     ))}
@@ -1318,7 +1332,9 @@ function App() {
                         setMostrarTodasCertificacoes((prev) => !prev)
                       }
                     >
-                      {mostrarTodasCertificacoes ? "Ver menos" : "Ver mais"}
+                      {mostrarTodasCertificacoes
+                        ? t.education.showLess
+                        : t.education.showMore}
                     </button>
                   )}
                 </div>
@@ -1330,18 +1346,14 @@ function App() {
                   <h3
                     className={`mb-3 text-sm font-semibold ${titulo_bloco_formacao}`}
                   >
-                    Idiomas
+                    {t.education.languagesTitle}
                   </h3>
                   <ul className={`space-y-2 text-sm ${texto_cor_opacidade}`}>
-                    <li>
-                      <b>Português</b> - nativo
-                    </li>
-                    <li>
-                      <b>Inglês</b> - intermediário
-                    </li>
-                    <li>
-                      <b>Espanhol</b> - intermediário
-                    </li>
+                    {t.education.languages.map((item) => (
+                      <li key={item.name}>
+                        <b>{item.name}</b> - {item.level}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -1352,7 +1364,7 @@ function App() {
         <section id="contato" className="relative pt-8 pb-12">
           <SectionBackground variant="blue" align="center" />
           <div className={`relative z-10 ${containerStyles}`}>
-            <AccordionSection id="contato" title="Contato">
+            <AccordionSection id="contato" title={t.sections.contact}>
               <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] p-2.5 premium-card md:p-3">
                 <div className="pointer-events-none absolute -left-18 -top-18 h-56 w-56 rounded-full bg-white/[0.02] blur-3xl" />
                 <div className="pointer-events-none absolute -right-24 top-4 h-64 w-64 rounded-full bg-white/[0.02] blur-3xl" />
@@ -1362,23 +1374,19 @@ function App() {
                     <h2
                       className={`text-2xl font-bold tracking-tight ${titulo_cor_opacidade}`}
                     >
-                      Vamos construir o futuro.
+                      {t.contact.title}
                     </h2>
                     <p
                       className={`mt-3 max-w-2xl text-sm leading-relaxed ${texto_cor_opacidade}`}
                     >
-                      Em busca da minha primeira oportunidade em tecnologia, com
-                      foco em desenvolvimento, engenharia de dados e soluções
-                      corporativas, aplicando tecnologia para resolver problemas
-                      reais e gerar valor através de sistemas eficientes e bem
-                      estruturados.
+                      {t.contact.text}
                     </p>
                     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                       <a
                         href="mailto:renzoheikivf@gmail.com"
                         className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-2.5 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                       >
-                        Enviar e-mail
+                        {t.contact.sendEmail}
                       </a>
                       <a
                         href="https://github.com/RenzoFernandes"
@@ -1386,7 +1394,7 @@ function App() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Ver GitHub
+                        {t.contact.viewGithub}
                       </a>
                       <a
                         href="https://www.linkedin.com/in/renzo-fernandes"
@@ -1394,7 +1402,7 @@ function App() {
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Abrir LinkedIn
+                        {t.contact.openLinkedin}
                       </a>
                     </div>
                   </div>
@@ -1402,12 +1410,12 @@ function App() {
                     <h3
                       className={`text-sm font-semibold tracking-wide ${titulo_cor_opacidade}`}
                     >
-                      Contato rápido
+                      {t.contact.quickTitle}
                     </h3>
                     <dl className="mt-4 text-sm">
                       <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
                         <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
-                          E-mail
+                          {t.contact.emailLabel}
                         </dt>
                         <dd className="break-all sm:col-start-2">
                           <a
@@ -1420,11 +1428,11 @@ function App() {
                       </div>
                       <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
                         <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
-                          Telefone
+                          {t.contact.phoneLabel}
                         </dt>
                         <dd className="sm:col-start-2">
                           <a
-                            href="https://wa.me/5513997000096?text=Ol%C3%A1%20Renzo%2C%20vi%20seu%20portf%C3%B3lio%20e%20gostaria%20de%20falar%20com%20voc%C3%AA."
+                            href={`https://wa.me/5513997000096?text=${encodeURIComponent(t.contact.whatsappMessage)}`}
                             className="text-zinc-300 transition-colors hover:text-white"
                             target="_blank"
                             rel="noreferrer"
@@ -1435,16 +1443,15 @@ function App() {
                       </div>
                       <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
                         <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
-                          Local
+                          {t.contact.locationLabel}
                         </dt>
                         <dd className="text-zinc-300 sm:col-start-2">
-                          São Paulo
+                          {t.contact.location}
                         </dd>
                       </div>
                     </dl>
                     <p className="mt-4 pt-2 text-xs font-medium text-zinc-500">
-                      Disponível para oportunidades (Presencial, Híbrido,
-                      Remoto).
+                      {t.contact.availability}
                     </p>
                   </div>
                 </div>
@@ -1459,13 +1466,13 @@ function App() {
           className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${containerStyles}`}
         >
           <p>
-            © {year ?? "____"} Renzo Fernandes. Todos os direitos reservados.
+            © {year ?? "____"} Renzo Fernandes. {t.footer.rights}
           </p>
           <a
             href="#hero"
             className="font-medium text-zinc-400 underline underline-offset-4 decoration-white/20 transition-all hover:text-cyan-400 hover:decoration-cyan-400/50"
           >
-            Voltar ao topo
+            {t.footer.backToTop}
           </a>
         </div>
       </footer>
