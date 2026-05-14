@@ -56,6 +56,7 @@ export const es: Translation = {
       "Soy estudiante de Sistemas de Información, con una futura segunda formación en Ciencias Contables, integrando tecnología, análisis de datos y visión estratégica de negocios para trabajar en el desarrollo de soluciones corporativas, automatización de procesos y sistemas escalables.",
       "Tengo experiencia en el desarrollo de proyectos full stack, APIs REST, integraciones de sistemas, modelado de bases de datos y aplicaciones web, utilizando tecnologías como JavaScript, TypeScript, React, Node.js, C# (.NET), Java, SQL y MySQL.",
       "También trabajo con análisis de datos y generación de insights mediante Power BI, además de contar con conocimientos en entornos IBM Mainframe (TSO/ZOWE) y tecnologías corporativas orientadas a ERP e integración de procesos empresariales, con formación complementaria en SAP Learning Hub.",
+      "Tengo interés en la Inteligencia Artificial aplicada a la automatización, la optimización de procesos, la productividad y la mejora del rendimiento, utilizando la IA como apoyo en el desarrollo, el análisis de datos y la creación de soluciones más eficientes e inteligentes.",
       "Tengo un perfil analítico, foco en la resolución de problemas y facilidad para conectar la tecnología con las necesidades del negocio, contribuyendo al desarrollo de soluciones eficientes, organizadas y con impacto real. Busco trabajar en ambientes que valoren la innovación, el aprendizaje continuo, la colaboración y la evolución profesional constante.",
     ],
     howTitle: "Cómo trabajo",

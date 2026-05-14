@@ -55,7 +55,8 @@ export const ptBR: Translation = {
     body: [
       "Profissional em formação em Sistemas de Informação, com futura formação dupla em Ciências Contábeis, unindo tecnologia, análise de dados e visão estratégica de negócios para atuar no desenvolvimento de soluções corporativas, automação de processos e sistemas escaláveis.",
       "Possuo experiência no desenvolvimento de projetos full stack, APIs REST, integrações de sistemas, modelagem de bancos de dados e aplicações web, utilizando tecnologias como JavaScript, TypeScript, React, Node.js, C# (.NET), Java, SQL e MySQL.",
-      "Atuo também com análise de dados e geração de insights através do Power BI, além de conhecimentos em ambientes Mainframe IBM (TSO/ZOWE) e tecnologias corporativas voltadas a ERP e integração de processos empresariais, com formação complementar pelo SAP Learning Hub.",
+      "Atuo também com análise de dados e geração de insights através do Power BI, além de conhecimentos em ambientes Mainframe IBM (TSO/ZOWE), tecnologias corporativas voltadas a ERP e integração de processos empresariais, com formação complementar pelo SAP Learning Hub.",
+      "Tenho interesse em Inteligência Artificial aplicada à automação, otimização de processos, produtividade e ganho de performance, utilizando IA como apoio no desenvolvimento, análise de dados e criação de soluções mais eficientes e inteligentes.",
       "Tenho perfil analítico, foco em resolução de problemas e facilidade em conectar tecnologia às necessidades do negócio, contribuindo para o desenvolvimento de soluções eficientes, organizadas e com impacto real. Busco atuar em ambientes que valorizem inovação, aprendizado contínuo, colaboração e evolução profissional constante.",
     ],
     howTitle: "Como trabalho",
@@ -151,8 +152,7 @@ export const ptBR: Translation = {
   },
   contact: {
     title: "Vamos construir o futuro.",
-    text:
-      "Em busca da minha primeira oportunidade em tecnologia, com foco em desenvolvimento, engenharia de dados e soluções corporativas, aplicando tecnologia para resolver problemas reais e gerar valor através de sistemas eficientes e bem estruturados.",
+    text: "Em busca da minha primeira oportunidade em tecnologia, com foco em desenvolvimento, engenharia de dados e soluções corporativas, aplicando tecnologia para resolver problemas reais e gerar valor através de sistemas eficientes e bem estruturados.",
     sendEmail: "Enviar e-mail",
     viewGithub: "Ver GitHub",
     openLinkedin: "Abrir LinkedIn",

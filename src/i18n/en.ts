@@ -56,6 +56,7 @@ export const en: Translation = {
       "I am an Information Systems student, with a future second degree in Accounting, combining technology, data analysis, and strategic business vision to work on enterprise solutions, process automation, and scalable systems.",
       "I have experience building full stack projects, REST APIs, system integrations, database modeling, and web applications using technologies such as JavaScript, TypeScript, React, Node.js, C# (.NET), Java, SQL, and MySQL.",
       "I also work with data analysis and insight generation through Power BI, along with knowledge of IBM Mainframe environments (TSO/ZOWE) and enterprise technologies focused on ERP and business process integration, complemented by SAP Learning Hub training.",
+      "I am interested in Artificial Intelligence applied to automation, process optimization, productivity, and performance gains, using AI as support for development, data analysis, and the creation of more efficient and intelligent solutions.",
       "I have an analytical profile, a problem-solving mindset, and the ability to connect technology with business needs, contributing to efficient, organized solutions with real impact. I aim to work in environments that value innovation, continuous learning, collaboration, and steady professional growth.",
     ],
     howTitle: "How I work",
