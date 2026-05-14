@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
 import { useCallback } from "react";
+import { BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import type { IconType } from "react-icons";
 import {
   SiAngular,
@@ -49,25 +50,25 @@ import type { Language, Translation } from "./i18n";
 
 const headerStyles = {
   header:
-    "border-white/5 bg-black/60 text-white shadow-sm backdrop-blur-2xl supports-[backdrop-filter]:bg-black/40",
-  logo: "text-white tracking-tighter",
-  nav: "text-zinc-400",
+    "border-[var(--border-subtle)] bg-[var(--nav-bg)] text-[var(--text-primary)] shadow-sm backdrop-blur-2xl supports-[backdrop-filter]:bg-[var(--nav-bg-soft)]",
+  logo: "text-[var(--text-primary)] tracking-tighter",
+  nav: "text-[var(--text-muted)]",
   navLink:
-    "hover:text-white focus-visible:text-white transition-colors duration-300",
+    "hover:text-[var(--text-primary)] focus-visible:text-[var(--text-primary)] transition-colors duration-300",
   menuButton:
-    "border-white/10 bg-zinc-900/50 text-zinc-300 hover:border-white/20 hover:text-white backdrop-blur-md",
+    "border-[var(--border-soft)] bg-[var(--surface-glass)] text-[var(--text-secondary)] hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] backdrop-blur-md",
   menuPanel:
-    "border-white/10 bg-zinc-950/95 text-zinc-300 backdrop-blur-xl shadow-2xl",
-  menuNav: "text-zinc-300",
-  menuLink: "hover:bg-white/5 hover:text-white",
+    "border-[var(--border-soft)] bg-[var(--menu-bg)] text-[var(--text-secondary)] backdrop-blur-xl shadow-2xl",
+  menuNav: "text-[var(--text-secondary)]",
+  menuLink: "hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]",
 };
 
 const containerStyles = "mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-16";
-const titulo_cor_opacidade = "text-white tracking-tight";
-const texto_cor_opacidade = "text-zinc-400";
-const titulo_bloco_formacao = "text-zinc-200";
+const titulo_cor_opacidade = "text-[var(--text-primary)] tracking-tight";
+const texto_cor_opacidade = "text-[var(--text-muted)]";
+const titulo_bloco_formacao = "text-[var(--text-secondary)]";
 const hover_card_azul =
-  "border-white/5 bg-[#0A0A0A] premium-card transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(34,211,238,0.05)] group";
+  "border-[var(--border-subtle)] bg-[var(--card-bg)] premium-card transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-[0_0_20px_var(--accent-glow-subtle)] group";
 
 type SkillItem = {
   nome: string;
@@ -186,6 +187,74 @@ function useCurrentYear() {
   return year;
 }
 
+type Theme = "light" | "dark";
+
+const themeStorageKey = "portfolio-theme";
+
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+
+  const storedTheme = window.localStorage.getItem(themeStorageKey);
+
+  if (storedTheme === "light" || storedTheme === "dark") {
+    return storedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
+}
+
+function applyTheme(theme: Theme) {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+}
+
+function useTheme() {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+
+  useEffect(() => {
+    applyTheme(theme);
+    window.localStorage.setItem(themeStorageKey, theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  }, []);
+
+  return { theme, toggleTheme };
+}
+
+type ThemeToggleProps = {
+  theme: Theme;
+  onToggle: () => void;
+};
+
+function ThemeToggle({ theme, onToggle }: ThemeToggleProps) {
+  const isDark = theme === "dark";
+
+  return (
+    <button
+      type="button"
+      className="group inline-flex h-9 w-16 items-center rounded-full border border-[var(--border-soft)] bg-[var(--surface-glass)] p-1 text-[var(--text-secondary)] shadow-[inset_0_1px_0_0_var(--inset-highlight)] backdrop-blur-md transition-all duration-300 hover:border-[var(--border-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+      aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
+      aria-pressed={!isDark}
+      onClick={onToggle}
+    >
+      <span
+        className={`flex h-7 w-7 items-center justify-center rounded-full bg-[var(--toggle-thumb)] text-[var(--toggle-icon)] shadow-[0_0_18px_var(--accent-glow-subtle),inset_0_1px_0_0_var(--inset-highlight)] transition-transform duration-300 ${
+          isDark ? "translate-x-0" : "translate-x-7"
+        }`}
+        aria-hidden="true"
+      >
+        {isDark ? <BsMoonStarsFill size={13} /> : <BsSunFill size={13} />}
+      </span>
+    </button>
+  );
+}
+
 function getProjetosPorPagina() {
   if (typeof window === "undefined") {
     return 3;
@@ -213,10 +282,10 @@ function AccordionSection({ title, action, children }: AccordionSectionProps) {
   return (
     <div className="w-full">
       <div className="flex items-center gap-4 mb-12 reveal">
-        <h2 className="text-3xl font-black tracking-tighter uppercase sm:text-4xl text-transparent bg-clip-text bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] animate-[shimmer_4s_infinite]">
+        <h2 className="text-3xl font-black tracking-tighter uppercase sm:text-4xl text-transparent bg-clip-text bg-[image:var(--title-gradient)] bg-[length:200%_100%] animate-[shimmer_4s_infinite]">
           {title}
         </h2>
-        <div className="h-px flex-1 bg-gradient-to-r from-zinc-700 to-transparent" />
+        <div className="h-px flex-1 bg-gradient-to-r from-[var(--divider-strong)] to-transparent" />
         {action && <div>{action}</div>}
       </div>
       {children}
@@ -312,7 +381,7 @@ function LanguageSwitcher({
 }: LanguageSwitcherProps) {
   return (
     <div
-      className="inline-flex rounded-lg border border-white/10 bg-zinc-900/50 p-0.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-zinc-400 backdrop-blur-md"
+      className="inline-flex rounded-lg border border-[var(--border-soft)] bg-[var(--surface-glass)] p-0.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--text-muted)] backdrop-blur-md"
       aria-label={label}
       role="group"
     >
@@ -322,8 +391,8 @@ function LanguageSwitcher({
           type="button"
           className={`rounded-md px-2.5 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
             language === option
-              ? "bg-white/10 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]"
-              : "hover:bg-white/5 hover:text-zinc-200"
+              ? "bg-[var(--surface-hover)] text-[var(--text-primary)] shadow-[inset_0_1px_0_0_var(--inset-highlight)]"
+              : "hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]"
           }`}
           aria-label={options[option]}
           aria-pressed={language === option}
@@ -407,7 +476,7 @@ function ParticlesBackground() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-[#020202]">
+    <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-[var(--background-canvas)] transition-colors duration-300">
       {/* 1. Camada de Glow (Ambient Light) - Unificada em variações de Cyan e Suavizada */}
       {/* Cyan Glow - Top Right */}
       <div className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-cyan-600/15 blur-[120px] animate-ambient-glow-1" />
@@ -424,13 +493,13 @@ function ParticlesBackground() {
       <div className="absolute top-[30%] right-[-30%] w-[150%] h-[400px] bg-gradient-to-b from-cyan-600/15 via-transparent to-transparent rotate-[45deg] blur-[60px] pointer-events-none transform-gpu origin-top-right" />
 
       {/* 2. Camada de Grid Tecnológico (Quase invisível, esmaecido nas bordas) */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-70" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)] opacity-70" />
 
       {/* 3. Camada de Partículas (Poeira Digital) */}
       <canvas ref={canvasRef} className="absolute inset-0 opacity-80" />
 
       {/* Vignette effect para fechar as bordas um pouco mais escuras e focar no conteúdo */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#020202_150%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--background-vignette)_150%)]" />
     </div>
   );
 }
@@ -490,6 +559,7 @@ function SectionBackground({ align = "center" }: SectionBackgroundProps) {
 
 function App() {
   const { language, setLanguage, t } = useI18n();
+  const { theme, toggleTheme } = useTheme();
   const year = useCurrentYear();
   const [mostrarTodasCertificacoes, setMostrarTodasCertificacoes] =
     useState(false);
@@ -817,7 +887,7 @@ function App() {
   ]);
 
   return (
-    <div className="flex flex-col min-h-screen overflow-clip text-zinc-300 relative bg-black selection:bg-zinc-800 selection:text-white">
+    <div className="flex flex-col min-h-screen overflow-clip text-[var(--text-secondary)] relative bg-[var(--page-bg)] selection:bg-[var(--selection-bg)] selection:text-[var(--selection-text)] transition-colors duration-300">
       <ParticlesBackground />
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${headerStyles.header}`}
@@ -853,11 +923,12 @@ function App() {
               options={t.language.options}
               onChange={setLanguage}
             />
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
             <MobileMenu links={navLinks} menu={t.menu} />
           </div>
         </div>
         <div
-          className="h-px w-full bg-gradient-to-r from-white/0 via-white/10 to-white/0"
+          className="h-px w-full bg-gradient-to-r from-transparent via-[var(--border-soft)] to-transparent"
           aria-hidden="true"
         />
       </header>
@@ -878,17 +949,17 @@ function App() {
                   className="mb-6 leading-[1.08] reveal"
                   style={{ transitionDelay: "100ms" }}
                 >
-                  <span className="block text-6xl font-black tracking-tighter text-white sm:text-7xl md:text-[6rem] lg:text-[7rem] drop-shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                  <span className="block text-6xl font-black tracking-tighter text-[var(--text-primary)] sm:text-7xl md:text-[6rem] lg:text-[7rem] drop-shadow-[0_0_40px_var(--accent-glow-subtle)]">
                     Renzo Fernandes
                   </span>
-                  <span className="block mt-5 pb-1 text-2xl font-bold leading-[1.15] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl bg-[linear-gradient(110deg,#a1a1aa,45%,#ffffff,55%,#a1a1aa)] bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_4s_infinite]">
+                  <span className="block mt-5 pb-1 text-2xl font-bold leading-[1.15] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl bg-[image:var(--title-gradient)] bg-[length:200%_100%] bg-clip-text text-transparent animate-[shimmer_4s_infinite]">
                     {t.hero.role.split(" ").slice(0, 2).join(" ")} <br />{" "}
                     {t.hero.role.split(" ").slice(2).join(" ")}
                   </span>
                 </h1>
                 {/* RESUMO PROFISSIONAL - edite o texto abaixo */}
                 <p
-                  className={`max-w-xl text-sm leading-relaxed sm:text-base reveal text-zinc-400 drop-shadow-md`}
+                  className={`max-w-xl text-sm leading-relaxed sm:text-base reveal ${texto_cor_opacidade} drop-shadow-md`}
                   style={{ transitionDelay: "100ms" }}
                 >
                   {t.hero.summary}
@@ -900,13 +971,13 @@ function App() {
                 >
                   <a
                     href="#projetos"
-                    className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-3 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                    className="inline-flex items-center justify-center rounded-lg border border-[var(--border-hover)] bg-[image:var(--button-primary-bg)] px-7 py-3 text-sm font-semibold text-[var(--button-primary-text)] shadow-[inset_0_1px_0_0_var(--inset-highlight),0_0_24px_var(--accent-glow-subtle)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--border-hover)] hover:bg-[var(--button-primary-bg-hover)] hover:text-[var(--text-primary)] hover:shadow-[inset_0_1px_0_0_var(--inset-highlight),0_0_30px_var(--accent-glow-medium)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                   >
                     {t.hero.viewProjects}
                   </a>
                   <a
                     href="#contato"
-                    className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-3 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-zinc-700/50 hover:bg-[#222] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                    className="inline-flex items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--card-bg-raised)] px-7 py-3 text-sm font-medium text-[var(--button-secondary-text)] shadow-[inset_0_1px_0_0_var(--border-subtle)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--border-hover)] hover:bg-[var(--card-bg-hover)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                   >
                     {t.hero.contact}
                   </a>
@@ -914,34 +985,34 @@ function App() {
                 {/* CONTATO RÁPIDO - botões compridos no final da coluna esquerda */}
                 <div className="mt-6 grid w-full max-w-[38rem] gap-3 lg:mt-auto lg:pt-10">
                   <div
-                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center ${hover_card_azul}`}
+                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-[var(--text-secondary)] sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center ${hover_card_azul}`}
                   >
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
                       {t.hero.locationLabel}
                     </span>
-                    <span className="break-all text-slate-300 sm:col-start-2">
+                    <span className="break-all text-[var(--text-secondary)] sm:col-start-2">
                       {t.hero.location}
                     </span>
                   </div>
                   <a
                     href="mailto:renzoheikivf@gmail.com"
-                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
+                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-[var(--text-secondary)] sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
                   >
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
                       {t.hero.emailLabel}
                     </span>
-                    <span className="break-all text-slate-300 sm:col-start-2">
+                    <span className="break-all text-[var(--text-secondary)] sm:col-start-2">
                       renzoheikivf@gmail.com
                     </span>
                   </a>
                   <a
                     href={`https://wa.me/5513997000096?text=${encodeURIComponent(t.contact.whatsappMessage)}`}
-                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-zinc-300 sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
+                    className={`flex w-full flex-col items-start gap-1 rounded-lg px-4 py-3 text-sm font-medium text-[var(--text-secondary)] sm:grid sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:items-center group-hover:text-cyan-400 ${hover_card_azul}`}
                   >
-                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--text-faint)]">
                       {t.hero.phoneLabel}
                     </span>
-                    <span className="text-slate-300 sm:col-start-2">
+                    <span className="text-[var(--text-secondary)] sm:col-start-2">
                       (13) 99700-0096
                     </span>
                   </a>
@@ -954,13 +1025,13 @@ function App() {
                 <div className="flex w-full max-w-2xl justify-center reveal py-12">
                   <div className="relative isolate inline-flex w-56 h-56 sm:w-72 sm:h-72 items-center justify-center mt-12 lg:mt-8 group">
                     {/* Pulsing Core Aura */}
-                    <div className="absolute inset-[-1.75rem] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(34,211,238,0.14),rgba(255,255,255,0.04)_34%,transparent_68%)] blur-2xl animate-avatar-ambient pointer-events-none" />
+                    <div className="absolute inset-[-1.75rem] rounded-full bg-[radial-gradient(circle_at_50%_45%,rgba(34,211,238,0.14),var(--avatar-aura-soft)_34%,transparent_68%)] blur-2xl animate-avatar-ambient pointer-events-none" />
                     <div className="absolute inset-[-3rem] rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.07),transparent_62%)] blur-[48px] pointer-events-none" />
 
                     {/* Outer Tech Rings */}
                     <div className="avatar-ring avatar-ring-outer absolute inset-[-1.5rem] rounded-full pointer-events-none" />
                     <div className="avatar-ring avatar-ring-inner absolute inset-[-0.85rem] rounded-full pointer-events-none" />
-                    <div className="absolute inset-[-2.15rem] rounded-full border border-white/[0.04] border-dashed animate-avatar-orbit-slow pointer-events-none" />
+                    <div className="absolute inset-[-2.15rem] rounded-full border border-[var(--border-subtle)] border-dashed animate-avatar-orbit-slow pointer-events-none" />
                     <div className="absolute inset-[-2.65rem] rounded-full border border-cyan-400/[0.08] border-dashed animate-avatar-orbit-reverse pointer-events-none" />
 
                     {/* Targeting Brackets (Corners) */}
@@ -969,31 +1040,31 @@ function App() {
                       <div className="avatar-corner avatar-corner-tr absolute top-0 right-0 w-8 h-8 border-t border-r border-cyan-400/35 rounded-tr-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:translate-x-1 group-hover:-translate-y-1" />
                       <div className="avatar-corner avatar-corner-bl absolute bottom-0 left-0 w-8 h-8 border-b border-l border-cyan-400/35 rounded-bl-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:-translate-x-1 group-hover:translate-y-1" />
                       <div className="avatar-corner avatar-corner-br absolute bottom-0 right-0 w-8 h-8 border-b border-r border-cyan-400/35 rounded-br-lg transition-all duration-700 group-hover:border-cyan-300/70 group-hover:translate-x-1 group-hover:translate-y-1" />
-                      <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full border border-cyan-300/30 bg-[#0A0A0A]/80 shadow-[0_0_12px_rgba(34,211,238,0.18)]" />
-                      <div className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full border border-white/15 bg-[#0A0A0A]/80" />
+                      <div className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 rounded-full border border-cyan-300/30 bg-[var(--card-bg)] shadow-[0_0_12px_var(--accent-glow-medium)]" />
+                      <div className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full border border-[var(--border-hover)] bg-[var(--card-bg)]" />
                     </div>
 
                     {/* Rotating Radar Sweep */}
-                    <div className="absolute inset-[-0.5rem] rounded-full animate-avatar-sweep pointer-events-none [background:conic-gradient(from_0deg,transparent_0_292deg,rgba(255,255,255,0.04)_326deg,rgba(34,211,238,0.28)_360deg)] [mask-image:radial-gradient(ellipse_at_center,transparent_68%,black_70%)]" />
+                    <div className="absolute inset-[-0.5rem] rounded-full animate-avatar-sweep pointer-events-none [background:conic-gradient(from_0deg,transparent_0_292deg,var(--avatar-sweep-quiet)_326deg,rgba(34,211,238,0.28)_360deg)] [mask-image:radial-gradient(ellipse_at_center,transparent_68%,black_70%)]" />
 
                     {/* Avatar Container */}
-                    <div className="relative w-full h-full rounded-full p-1.5 bg-[linear-gradient(145deg,rgba(255,255,255,0.16),rgba(10,10,10,0.96)_30%,rgba(34,211,238,0.16)_62%,rgba(10,10,10,0.98))] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_0_50px_rgba(0,0,0,0.8),0_0_34px_rgba(34,211,238,0.08)] z-10 cursor-crosshair overflow-hidden group-hover:border-cyan-500/30 transition-colors duration-500">
-                      <div className="relative w-full h-full rounded-full overflow-hidden bg-slate-900 ring-1 ring-white/10">
+                    <div className="relative w-full h-full rounded-full p-1.5 bg-[image:var(--avatar-frame-bg)] border border-[var(--border-soft)] shadow-[inset_0_1px_0_var(--inset-highlight),0_0_50px_var(--premium-card-shadow),0_0_34px_var(--accent-glow-subtle)] z-10 cursor-crosshair overflow-hidden group-hover:border-cyan-500/30 transition-colors duration-500">
+                      <div className="relative w-full h-full rounded-full overflow-hidden bg-[var(--card-bg-raised)] ring-1 ring-[var(--border-soft)]">
                         {/* Imagem */}
                         <img
                           src={fotoPerfil}
                           alt={t.hero.profileAlt}
-                          className="w-full h-full object-cover filter contrast-[1.15] saturate-50 group-hover:scale-110 group-hover:saturate-100 transition-all duration-700"
+                          className="avatar-photo w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
                         />
 
                         {/* Overlay Shadow para profundidade */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] via-transparent to-[#0A0A0A]/90 z-10 mix-blend-multiply pointer-events-none" />
-                        <div className="absolute inset-0 z-20 rounded-full border border-white/[0.07] shadow-[inset_0_0_28px_rgba(34,211,238,0.08),inset_0_-34px_52px_rgba(0,0,0,0.36)] pointer-events-none" />
-                        <div className="absolute inset-x-8 top-8 z-20 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-60 pointer-events-none" />
+                        <div className="absolute inset-0 z-10 bg-[linear-gradient(to_bottom,var(--avatar-overlay-top),transparent,var(--avatar-overlay-bottom))] [mix-blend-mode:var(--avatar-overlay-blend)] opacity-[var(--avatar-overlay-opacity)] pointer-events-none" />
+                        <div className="absolute inset-0 z-20 rounded-full border border-[var(--border-soft)] shadow-[var(--avatar-inset-shadow)] pointer-events-none" />
+                        <div className="absolute inset-x-8 top-8 z-20 h-px bg-gradient-to-r from-transparent via-[var(--divider-strong)] to-transparent opacity-60 pointer-events-none" />
 
                         {/* Holographic Scanner Beam */}
                         <div className="absolute inset-0 z-30 pointer-events-none animate-avatar-scan">
-                          <div className="absolute left-[-18%] w-[136%] h-px bg-gradient-to-r from-transparent via-cyan-300/75 to-transparent shadow-[0_0_14px_rgba(34,211,238,0.45)]" />
+                          <div className="absolute left-[-18%] w-[136%] h-px bg-gradient-to-r from-transparent via-cyan-300/75 to-transparent shadow-[0_0_14px_var(--accent-glow-strong)]" />
                           <div
                             className="absolute left-0 w-full h-20 bg-gradient-to-t from-cyan-500/10 to-transparent opacity-70"
                             style={{ bottom: "100%" }}
@@ -1003,17 +1074,17 @@ function App() {
                     </div>
 
                     {/* System Badges */}
-                    <div className="absolute -right-8 top-12 sm:-right-12 sm:top-16 bg-[#0A0A0A]/80 border border-cyan-500/25 px-3 py-1.5 rounded text-[0.65rem] font-mono text-cyan-300/80 tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_15px_rgba(34,211,238,0.08)] z-20 backdrop-blur-md animate-avatar-float">
+                    <div className="absolute -right-8 top-12 sm:-right-12 sm:top-16 bg-[var(--card-bg)] border border-cyan-500/25 px-3 py-1.5 rounded text-[0.65rem] font-mono text-cyan-300/80 tracking-widest shadow-[inset_0_1px_0_var(--inset-highlight),0_0_15px_var(--accent-glow-subtle)] z-20 backdrop-blur-md animate-avatar-float">
                       SYS.SYNC
                     </div>
-                    <div className="absolute -left-4 bottom-12 sm:-left-8 sm:bottom-16 bg-[#0A0A0A]/80 border border-emerald-500/25 px-3 py-1.5 rounded text-[0.65rem] font-mono text-emerald-300/80 tracking-widest shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_15px_rgba(16,185,129,0.08)] z-20 backdrop-blur-md animate-avatar-float [animation-delay:1.4s]">
+                    <div className="absolute -left-4 bottom-12 sm:-left-8 sm:bottom-16 bg-[var(--card-bg)] border border-emerald-500/25 px-3 py-1.5 rounded text-[0.65rem] font-mono text-emerald-300/80 tracking-widest shadow-[inset_0_1px_0_var(--inset-highlight),0_0_15px_rgba(16,185,129,0.08)] z-20 backdrop-blur-md animate-avatar-float [animation-delay:1.4s]">
                       100%
                     </div>
                   </div>
                 </div>
 
                 {/* CARD DE LINKS E RESUMO - ajuste posição, tamanho e conteúdo aqui */}
-                <aside className="mt-12 w-full max-w-2xl rounded-2xl border border-white/5 bg-white/[0.02] p-6 text-left shadow-xl backdrop-blur-md lg:mt-auto">
+                <aside className="mt-12 w-full max-w-2xl rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-glass)] p-6 text-left shadow-xl backdrop-blur-md lg:mt-auto">
                   <h2
                     className={`text-xs font-semibold uppercase tracking-[0.24em] ${titulo_cor_opacidade}`}
                   >
@@ -1022,7 +1093,7 @@ function App() {
                   <div className="mt-3 grid gap-2 text-sm font-medium">
                     <a
                       href="https://www.linkedin.com/in/renzo-fernandes"
-                      className={`cursor-pointer rounded-lg px-4 py-2.5 text-zinc-300 group-hover:text-cyan-400 ${hover_card_azul}`}
+                      className={`cursor-pointer rounded-lg px-4 py-2.5 text-[var(--text-secondary)] group-hover:text-cyan-400 ${hover_card_azul}`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -1030,7 +1101,7 @@ function App() {
                     </a>
                     <a
                       href="https://github.com/RenzoFernandes"
-                      className={`cursor-pointer rounded-lg px-4 py-2.5 text-zinc-300 group-hover:text-cyan-400 ${hover_card_azul}`}
+                      className={`cursor-pointer rounded-lg px-4 py-2.5 text-[var(--text-secondary)] group-hover:text-cyan-400 ${hover_card_azul}`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -1038,7 +1109,7 @@ function App() {
                     </a>
                   </div>
 
-                  <div className="my-6 h-px w-full bg-white/5" />
+                  <div className="my-6 h-px w-full bg-[var(--divider)]" />
 
                   <h2
                     className={`text-xs font-semibold uppercase tracking-[0.24em] ${titulo_cor_opacidade}`}
@@ -1068,7 +1139,7 @@ function App() {
                   ))}
                 </div>
                 <div className="grid gap-4">
-                  <div className="rounded-2xl border border-white/5 bg-[#0A0A0A] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.05)] group">
+                  <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_var(--accent-glow-subtle)] group">
                     <h3
                       className={`mb-2 text-sm font-semibold transition-colors duration-300 group-hover:text-cyan-400 ${titulo_cor_opacidade}`}
                     >
@@ -1080,7 +1151,7 @@ function App() {
                       {t.about.howText}
                     </p>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-[#0A0A0A] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.05)] group">
+                  <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-5 premium-card transition-all duration-300 hover:border-cyan-500/30 hover:shadow-[0_0_30px_var(--accent-glow-subtle)] group">
                     <h3
                       className={`mb-2 text-sm font-semibold transition-colors duration-300 group-hover:text-cyan-400 ${titulo_cor_opacidade}`}
                     >
@@ -1118,7 +1189,7 @@ function App() {
                           className={`flex h-12 items-center gap-2.5 rounded-xl border px-2.5 py-1.5 backdrop-blur-sm reveal ${hover_card_azul}`}
                         >
                           <span
-                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/5 bg-white/5 text-base"
+                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-hover)] text-base"
                             style={{ color: item.cor }}
                             aria-hidden="true"
                           >
@@ -1152,7 +1223,7 @@ function App() {
                 <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-[#111] text-xl leading-none text-zinc-500 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[#222] hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--card-bg-raised)] text-xl leading-none text-[var(--text-faint)] transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[var(--card-bg-hover)] hover:text-cyan-400 hover:shadow-[0_0_15px_var(--accent-glow-medium)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                     aria-label={t.projects.controls.previous}
                     onClick={() => scrollProjetos("prev")}
                   >
@@ -1160,7 +1231,7 @@ function App() {
                   </button>
                   <button
                     type="button"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-[#111] text-xl leading-none text-zinc-500 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[#222] hover:text-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--card-bg-raised)] text-xl leading-none text-[var(--text-faint)] transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-[var(--card-bg-hover)] hover:text-cyan-400 hover:shadow-[0_0_15px_var(--accent-glow-medium)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                     aria-label={t.projects.controls.next}
                     onClick={() => scrollProjetos("next")}
                   >
@@ -1183,7 +1254,7 @@ function App() {
                 {projetos.map((project, index) => (
                   <article
                     key={project.title}
-                    className="group relative flex h-[34rem] w-[91%] flex-none cursor-pointer snap-start flex-col overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] premium-card transition-all duration-500 hover:-translate-y-2 hover:border-zinc-600/50 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)] reveal"
+                    className="group relative flex h-[34rem] w-[91%] flex-none cursor-pointer snap-start flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] premium-card transition-all duration-500 hover:-translate-y-2 hover:border-[var(--border-hover)] hover:shadow-[0_0_40px_var(--accent-glow-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--page-bg)] md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)] reveal"
                     style={{ transitionDelay: `${index * 100}ms` }}
                     role="link"
                     tabIndex={0}
@@ -1193,11 +1264,11 @@ function App() {
                       handleProjetoKeyDown(event, project.projectUrl)
                     }
                   >
-                    <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/[0.03] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-20" />
-                    <div className="relative h-44 w-full shrink-0 overflow-hidden border-b border-white/5 bg-[#080808]">
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[var(--border-subtle)] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 z-20" />
+                    <div className="relative h-44 w-full shrink-0 overflow-hidden border-b border-[var(--border-subtle)] bg-[var(--card-bg-raised)]">
                       {project.image ? (
                         <>
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[var(--image-overlay)] to-transparent z-10 opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
                           <img
                             src={project.image}
                             alt={t.projects.controls.imageAlt(project.title)}
@@ -1205,13 +1276,13 @@ function App() {
                           />
                         </>
                       ) : (
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent z-10 opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--image-overlay)] to-transparent z-10 opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
                       )}
                     </div>
                     <div className="relative z-10 flex flex-1 flex-col p-5">
                       <header className="flex min-h-[1.75rem] items-start">
                         <h3
-                          className={`overflow-hidden text-base font-semibold leading-6 transition-colors duration-300 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] group-hover:text-white ${titulo_cor_opacidade}`}
+                          className={`overflow-hidden text-base font-semibold leading-6 transition-colors duration-300 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] group-hover:text-[var(--text-primary)] ${titulo_cor_opacidade}`}
                         >
                           {project.title}
                         </h3>
@@ -1226,14 +1297,14 @@ function App() {
                           {project.technologies.map((technology) => (
                             <li
                               key={technology}
-                              className="flex min-h-7 min-w-0 items-center justify-center rounded-full border border-white/5 bg-white/[0.02] px-1.5 py-1 text-center text-[0.62rem] font-medium leading-tight text-zinc-400 transition-colors duration-300 group-hover:border-zinc-600/50 group-hover:text-zinc-200 sm:px-2 sm:text-[0.68rem]"
+                              className="flex min-h-7 min-w-0 items-center justify-center rounded-full border border-[var(--border-subtle)] bg-[var(--surface-hover)] px-1.5 py-1 text-center text-[0.62rem] font-medium leading-tight text-[var(--text-muted)] transition-colors duration-300 group-hover:border-[var(--border-hover)] group-hover:text-[var(--text-secondary)] sm:px-2 sm:text-[0.68rem]"
                               title={technology}
                             >
                               {technology}
                             </li>
                           ))}
                         </ul>
-                        <div className="mt-2 flex min-h-[1.25rem] text-xs font-semibold tracking-wide text-zinc-500 transition-colors duration-300 group-hover:text-white uppercase">
+                        <div className="mt-2 flex min-h-[1.25rem] text-xs font-semibold tracking-wide text-[var(--text-faint)] transition-colors duration-300 group-hover:text-[var(--text-primary)] uppercase">
                           <span className="relative pb-px">
                             {t.projects.controls.open}
                           </span>
@@ -1252,10 +1323,10 @@ function App() {
                     <button
                       key={`projetos-pagina-${index + 1}`}
                       type="button"
-                      className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#020202] ${
+                      className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--page-bg)] ${
                         paginaProjetoAtiva === index
-                          ? "w-6 bg-zinc-300 opacity-100 shadow-[0_0_12px_rgba(255,255,255,0.3)]"
-                          : "w-2 bg-zinc-800 opacity-60 hover:bg-zinc-500 hover:opacity-100"
+                          ? "w-6 bg-[var(--text-secondary)] opacity-100 shadow-[0_0_12px_var(--accent-glow-medium)]"
+                          : "w-2 bg-[var(--text-faint)] opacity-60 hover:bg-[var(--text-muted)] hover:opacity-100"
                       }`}
                       aria-label={t.projects.controls.page(index + 1)}
                       aria-current={
@@ -1298,7 +1369,7 @@ function App() {
                           {degree.period}
                         </p>
                         {index < t.education.degrees.length - 1 && (
-                          <div className="mt-5 h-px w-full bg-white/5" />
+                          <div className="mt-5 h-px w-full bg-[var(--divider)]" />
                         )}
                       </div>
                     ))}
@@ -1327,7 +1398,7 @@ function App() {
                   {temCertificacoesExtras && (
                     <button
                       type="button"
-                      className="mt-3 text-sm font-semibold text-slate-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                      className="mt-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                       onClick={() =>
                         setMostrarTodasCertificacoes((prev) => !prev)
                       }
@@ -1365,10 +1436,10 @@ function App() {
           <SectionBackground variant="blue" align="center" />
           <div className={`relative z-10 ${containerStyles}`}>
             <AccordionSection id="contato" title={t.sections.contact}>
-              <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] p-2.5 premium-card md:p-3">
-                <div className="pointer-events-none absolute -left-18 -top-18 h-56 w-56 rounded-full bg-white/[0.02] blur-3xl" />
-                <div className="pointer-events-none absolute -right-24 top-4 h-64 w-64 rounded-full bg-white/[0.02] blur-3xl" />
-                <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <div className="relative overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-2.5 premium-card md:p-3">
+                <div className="pointer-events-none absolute -left-18 -top-18 h-56 w-56 rounded-full bg-[var(--surface-hover)] blur-3xl" />
+                <div className="pointer-events-none absolute -right-24 top-4 h-64 w-64 rounded-full bg-[var(--surface-hover)] blur-3xl" />
+                <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[var(--divider-strong)] to-transparent" />
                 <div className="relative grid min-h-[8rem] gap-5 md:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)]">
                   <div className="flex flex-col justify-start pt-2 pl-4">
                     <h2
@@ -1384,13 +1455,13 @@ function App() {
                     <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                       <a
                         href="mailto:renzoheikivf@gmail.com"
-                        className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-[linear-gradient(135deg,rgba(255,255,255,0.13),rgba(113,113,122,0.08)_48%,rgba(255,255,255,0.06))] px-7 py-2.5 text-sm font-semibold text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.16),0_0_24px_rgba(255,255,255,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/12 hover:text-white hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.24),0_0_30px_rgba(255,255,255,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                        className="inline-flex items-center justify-center rounded-lg border border-[var(--border-hover)] bg-[image:var(--button-primary-bg)] px-7 py-2.5 text-sm font-semibold text-[var(--button-primary-text)] shadow-[inset_0_1px_0_0_var(--inset-highlight),0_0_24px_var(--accent-glow-subtle)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-[var(--border-hover)] hover:bg-[var(--button-primary-bg-hover)] hover:text-[var(--text-primary)] hover:shadow-[inset_0_1px_0_0_var(--inset-highlight),0_0_30px_var(--accent-glow-medium)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                       >
                         {t.contact.sendEmail}
                       </a>
                       <a
                         href="https://github.com/RenzoFernandes"
-                        className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-2.5 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#222] hover:text-white hover:border-zinc-700/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                        className="inline-flex items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--card-bg-raised)] px-7 py-2.5 text-sm font-medium text-[var(--button-secondary-text)] shadow-[inset_0_1px_0_0_var(--border-subtle)] transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--card-bg-hover)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -1398,7 +1469,7 @@ function App() {
                       </a>
                       <a
                         href="https://www.linkedin.com/in/renzo-fernandes"
-                        className="inline-flex items-center justify-center rounded-lg border border-white/5 bg-[#111] px-7 py-2.5 text-sm font-medium text-zinc-300 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#222] hover:text-white hover:border-zinc-700/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                        className="inline-flex items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--card-bg-raised)] px-7 py-2.5 text-sm font-medium text-[var(--button-secondary-text)] shadow-[inset_0_1px_0_0_var(--border-subtle)] transition-all duration-300 hover:-translate-y-1 hover:bg-[var(--card-bg-hover)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -1406,34 +1477,34 @@ function App() {
                       </a>
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-white/5 bg-[#111]/50 p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.02)] backdrop-blur-sm">
+                  <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-glass)] p-5 shadow-[inset_0_1px_0_0_var(--border-subtle)] backdrop-blur-sm">
                     <h3
                       className={`text-sm font-semibold tracking-wide ${titulo_cor_opacidade}`}
                     >
                       {t.contact.quickTitle}
                     </h3>
                     <dl className="mt-4 text-sm">
-                      <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
-                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
+                      <div className="grid gap-2 border-b border-[var(--divider)] py-3 text-sm font-medium text-[var(--text-secondary)] sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
+                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--text-faint)]">
                           {t.contact.emailLabel}
                         </dt>
                         <dd className="break-all sm:col-start-2">
                           <a
                             href="mailto:renzoheikivf@gmail.com"
-                            className="text-zinc-300 transition-colors hover:text-white"
+                            className="text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
                           >
                             renzoheikivf@gmail.com
                           </a>
                         </dd>
                       </div>
-                      <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
-                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
+                      <div className="grid gap-2 border-b border-[var(--divider)] py-3 text-sm font-medium text-[var(--text-secondary)] sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
+                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--text-faint)]">
                           {t.contact.phoneLabel}
                         </dt>
                         <dd className="sm:col-start-2">
                           <a
                             href={`https://wa.me/5513997000096?text=${encodeURIComponent(t.contact.whatsappMessage)}`}
-                            className="text-zinc-300 transition-colors hover:text-white"
+                            className="text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -1441,16 +1512,16 @@ function App() {
                           </a>
                         </dd>
                       </div>
-                      <div className="grid gap-2 border-b border-white/5 py-3 text-sm font-medium text-zinc-300 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
-                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-zinc-600">
+                      <div className="grid gap-2 border-b border-[var(--divider)] py-3 text-sm font-medium text-[var(--text-secondary)] sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:items-center">
+                        <dt className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--text-faint)]">
                           {t.contact.locationLabel}
                         </dt>
-                        <dd className="text-zinc-300 sm:col-start-2">
+                        <dd className="text-[var(--text-secondary)] sm:col-start-2">
                           {t.contact.location}
                         </dd>
                       </div>
                     </dl>
-                    <p className="mt-4 pt-2 text-xs font-medium text-zinc-500">
+                    <p className="mt-4 pt-2 text-xs font-medium text-[var(--text-faint)]">
                       {t.contact.availability}
                     </p>
                   </div>
@@ -1461,7 +1532,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="relative z-10 mt-auto border-t border-white/5 bg-black/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-black/40 py-8 text-sm text-zinc-500">
+      <footer className="relative z-10 mt-auto border-t border-[var(--border-subtle)] bg-[var(--nav-bg)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[var(--nav-bg-soft)] py-8 text-sm text-[var(--text-faint)]">
         <div
           className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between ${containerStyles}`}
         >
@@ -1470,7 +1541,7 @@ function App() {
           </p>
           <a
             href="#hero"
-            className="font-medium text-zinc-400 underline underline-offset-4 decoration-white/20 transition-all hover:text-cyan-400 hover:decoration-cyan-400/50"
+            className="font-medium text-[var(--text-muted)] underline underline-offset-4 decoration-[var(--divider-strong)] transition-all hover:text-cyan-400 hover:decoration-cyan-400/50"
           >
             {t.footer.backToTop}
           </a>

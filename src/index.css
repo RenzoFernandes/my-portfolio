@@ -5,17 +5,120 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --page-bg: #020202;
+    --background-canvas: #020202;
+    --background-vignette: #020202;
+    --text-primary: #ffffff;
+    --text-secondary: #d4d4d8;
+    --text-muted: #a1a1aa;
+    --text-faint: #52525b;
+    --nav-bg: rgba(0, 0, 0, 0.6);
+    --nav-bg-soft: rgba(0, 0, 0, 0.4);
+    --menu-bg: rgba(9, 9, 11, 0.95);
+    --card-bg: #0a0a0a;
+    --card-bg-raised: #111111;
+    --card-bg-hover: #222222;
+    --surface-glass: rgba(24, 24, 27, 0.5);
+    --surface-hover: rgba(255, 255, 255, 0.05);
+    --border-subtle: rgba(255, 255, 255, 0.05);
+    --border-soft: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.2);
+    --divider: rgba(255, 255, 255, 0.05);
+    --divider-strong: rgba(255, 255, 255, 0.2);
+    --inset-highlight: rgba(255, 255, 255, 0.1);
+    --premium-card-start: rgba(20, 20, 20, 0.9);
+    --premium-card-end: rgba(5, 5, 5, 0.95);
+    --premium-card-shadow: rgba(0, 0, 0, 0.8);
+    --accent-glow-subtle: rgba(34, 211, 238, 0.08);
+    --accent-glow-medium: rgba(34, 211, 238, 0.2);
+    --accent-glow-strong: rgba(34, 211, 238, 0.45);
+    --button-primary-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.13), rgba(113, 113, 122, 0.08) 48%, rgba(255, 255, 255, 0.06));
+    --button-primary-bg-hover: rgba(255, 255, 255, 0.12);
+    --button-primary-text: #f4f4f5;
+    --button-secondary-text: #d4d4d8;
+    --toggle-thumb: rgba(255, 255, 255, 0.12);
+    --toggle-icon: #f8fafc;
+    --title-gradient: linear-gradient(110deg, #a1a1aa, 45%, #ffffff, 55%, #a1a1aa);
+    --grid-line: rgba(255, 255, 255, 0.012);
+    --image-overlay: #0a0a0a;
+    --avatar-aura-soft: rgba(255, 255, 255, 0.04);
+    --avatar-frame-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(10, 10, 10, 0.96) 30%, rgba(34, 211, 238, 0.16) 62%, rgba(10, 10, 10, 0.98));
+    --avatar-image-filter: contrast(1.15) saturate(0.5);
+    --avatar-image-hover-filter: contrast(1.15) saturate(1);
+    --avatar-overlay-top: rgba(255, 255, 255, 0.03);
+    --avatar-overlay-bottom: rgba(10, 10, 10, 0.9);
+    --avatar-overlay-opacity: 1;
+    --avatar-overlay-blend: multiply;
+    --avatar-inset-shadow: inset 0 0 28px rgba(34, 211, 238, 0.08), inset 0 -34px 52px rgba(0, 0, 0, 0.36);
+    --avatar-sweep-quiet: rgba(255, 255, 255, 0.04);
+    --selection-bg: #27272a;
+    --selection-text: #ffffff;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --page-bg: #f1f7fb;
+    --background-canvas: #f1f7fb;
+    --background-vignette: #eef6fb;
+    --text-primary: #06141b;
+    --text-secondary: #1e3440;
+    --text-muted: #526672;
+    --text-faint: #7b8c96;
+    --nav-bg: rgba(248, 253, 255, 0.78);
+    --nav-bg-soft: rgba(248, 253, 255, 0.56);
+    --menu-bg: rgba(248, 253, 255, 0.96);
+    --card-bg: #fbfdff;
+    --card-bg-raised: #edf6fa;
+    --card-bg-hover: #dfeff5;
+    --surface-glass: rgba(255, 255, 255, 0.7);
+    --surface-hover: rgba(8, 145, 178, 0.075);
+    --border-subtle: rgba(8, 47, 73, 0.1);
+    --border-soft: rgba(8, 47, 73, 0.14);
+    --border-hover: rgba(8, 47, 73, 0.26);
+    --divider: rgba(8, 47, 73, 0.1);
+    --divider-strong: rgba(8, 47, 73, 0.2);
+    --inset-highlight: rgba(255, 255, 255, 0.85);
+    --premium-card-start: rgba(255, 255, 255, 0.96);
+    --premium-card-end: rgba(229, 245, 251, 0.94);
+    --premium-card-shadow: rgba(8, 47, 73, 0.16);
+    --accent-glow-subtle: rgba(6, 182, 212, 0.13);
+    --accent-glow-medium: rgba(8, 145, 178, 0.26);
+    --accent-glow-strong: rgba(8, 145, 178, 0.44);
+    --button-primary-bg: linear-gradient(135deg, rgba(14, 116, 144, 0.16), rgba(6, 182, 212, 0.1) 48%, rgba(255, 255, 255, 0.86));
+    --button-primary-bg-hover: rgba(6, 182, 212, 0.1);
+    --button-primary-text: #083344;
+    --button-secondary-text: #27505d;
+    --toggle-thumb: rgba(6, 182, 212, 0.16);
+    --toggle-icon: #0891b2;
+    --title-gradient: linear-gradient(110deg, #64748b, 43%, #05202b, 55%, #0891b2);
+    --grid-line: rgba(8, 47, 73, 0.04);
+    --image-overlay: rgba(230, 246, 252, 0.18);
+    --avatar-aura-soft: rgba(6, 182, 212, 0.08);
+    --avatar-frame-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(218, 241, 248, 0.92) 30%, rgba(6, 182, 212, 0.2) 62%, rgba(255, 255, 255, 0.98));
+    --avatar-image-filter: contrast(1.08) saturate(0.92) brightness(1.02);
+    --avatar-image-hover-filter: contrast(1.1) saturate(1.1) brightness(1.02);
+    --avatar-overlay-top: rgba(255, 255, 255, 0.08);
+    --avatar-overlay-bottom: rgba(8, 47, 73, 0.22);
+    --avatar-overlay-opacity: 0.54;
+    --avatar-overlay-blend: normal;
+    --avatar-inset-shadow: inset 0 0 24px rgba(8, 145, 178, 0.1), inset 0 -26px 38px rgba(8, 47, 73, 0.16);
+    --avatar-sweep-quiet: rgba(8, 47, 73, 0.06);
+    --selection-bg: rgba(8, 145, 178, 0.22);
+    --selection-text: #082f49;
   }
 
   html {
     scroll-padding-top: 3.75rem;
     scroll-behavior: smooth;
-    background-color: #020202;
+    background-color: var(--page-bg);
     overflow-x: hidden;
   }
 
   body {
-    @apply font-sans text-[16px] text-zinc-400 antialiased bg-[#020202];
+    @apply font-sans text-[16px] antialiased;
+    background-color: var(--page-bg);
+    color: var(--text-muted);
+    transition: background-color 300ms ease, color 300ms ease;
   }
 }
 
@@ -71,12 +174,12 @@
 
   /* Módulos Premium (Cards) */
   .premium-card {
-    background: linear-gradient(160deg, rgba(20,20,20,0.9) 0%, rgba(5,5,5,0.95) 100%);
+    background: linear-gradient(160deg, var(--premium-card-start) 0%, var(--premium-card-end) 100%);
     box-shadow: 
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-      inset 0 -1px 0 0 rgba(255, 255, 255, 0.02),
-      0 0 0 1px rgba(255, 255, 255, 0.05),
-      0 20px 40px -10px rgba(0, 0, 0, 0.8);
+      inset 0 1px 0 0 var(--inset-highlight),
+      inset 0 -1px 0 0 var(--border-subtle),
+      0 0 0 1px var(--border-subtle),
+      0 20px 40px -10px var(--premium-card-shadow);
     position: relative;
     overflow: hidden;
   }
@@ -85,7 +188,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(34,211,238,0.1), transparent);
+    background: linear-gradient(90deg, transparent, var(--accent-glow-subtle), transparent);
     transform: translateX(-100%) skewX(-15deg);
     transition: transform 0.8s ease-in-out;
     pointer-events: none;
@@ -94,6 +197,14 @@
 
   .premium-card:hover::after {
     transform: translateX(100%) skewX(-15deg);
+  }
+
+  .avatar-photo {
+    filter: var(--avatar-image-filter);
+  }
+
+  .group:hover .avatar-photo {
+    filter: var(--avatar-image-hover-filter);
   }
 
   @keyframes pulse-glow {
