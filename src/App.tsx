@@ -508,6 +508,7 @@ function App() {
         "TypeScript",
         "Node.js",
         "Express",
+        "Docker",
         "Tailwind CSS",
         "JWT",
         "REST API",
@@ -1162,7 +1163,7 @@ function App() {
                 {projetos.map((project, index) => (
                   <article
                     key={project.title}
-                    className="group relative flex h-[31rem] w-[91%] flex-none cursor-pointer snap-start flex-col overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] premium-card transition-all duration-500 hover:-translate-y-2 hover:border-zinc-600/50 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)] reveal"
+                    className="group relative flex h-[34rem] w-[91%] flex-none cursor-pointer snap-start flex-col overflow-hidden rounded-2xl border border-white/5 bg-[#0A0A0A] premium-card transition-all duration-500 hover:-translate-y-2 hover:border-zinc-600/50 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black md:w-[calc((100%-1.25rem)/2.02)] lg:w-[calc((100%-2.5rem)/3.3)] reveal"
                     style={{ transitionDelay: `${index * 100}ms` }}
                     role="link"
                     tabIndex={0}
@@ -1196,22 +1197,25 @@ function App() {
                         </h3>
                       </header>
                       <p
-                        className={`mt-1 h-[7rem] overflow-hidden text-sm leading-relaxed ${texto_cor_opacidade}`}
+                        className={`mt-2 text-sm leading-relaxed ${texto_cor_opacidade}`}
                       >
                         {project.description}
                       </p>
-                      <ul className="mt-6 flex min-h-[3.75rem] max-h-[3.75rem] flex-wrap content-start gap-2 overflow-hidden">
-                        {project.technologies.map((technology) => (
-                          <li
-                            key={technology}
-                            className="rounded-full border border-white/5 bg-white/[0.02] px-3 py-1 text-[0.7rem] font-medium text-zinc-400 transition-colors duration-300 group-hover:border-zinc-600/50 group-hover:text-zinc-200"
-                          >
-                            {technology}
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="mt-auto flex min-h-[1.25rem] pt-2 text-xs font-semibold tracking-wide text-zinc-500 transition-colors duration-300 group-hover:text-white uppercase">
-                        <span className="relative pb-px">Abrir Projeto</span>
+                      <div className="mt-auto pt-1">
+                        <ul className="grid h-[6.5rem] grid-cols-3 content-start gap-2 overflow-hidden">
+                          {project.technologies.map((technology) => (
+                            <li
+                              key={technology}
+                              className="flex min-h-7 min-w-0 items-center justify-center rounded-full border border-white/5 bg-white/[0.02] px-1.5 py-1 text-center text-[0.62rem] font-medium leading-tight text-zinc-400 transition-colors duration-300 group-hover:border-zinc-600/50 group-hover:text-zinc-200 sm:px-2 sm:text-[0.68rem]"
+                              title={technology}
+                            >
+                              {technology}
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-2 flex min-h-[1.25rem] text-xs font-semibold tracking-wide text-zinc-500 transition-colors duration-300 group-hover:text-white uppercase">
+                          <span className="relative pb-px">Abrir Projeto</span>
+                        </div>
                       </div>
                     </div>
                   </article>
