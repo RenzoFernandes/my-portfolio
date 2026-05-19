@@ -53,7 +53,7 @@ export const ptBR: Translation = {
   },
   about: {
     body: [
-      "Profissional em formação em Sistemas de Informação, com futura formação dupla em Ciências Contábeis, unindo tecnologia, análise de dados e visão estratégica de negócios para atuar no desenvolvimento de soluções corporativas, automação de processos e sistemas escaláveis.",
+      "Profissional em formação em Sistemas de Informação, unindo tecnologia, análise de dados e visão estratégica de negócios para atuar no desenvolvimento de soluções corporativas, automação de processos e sistemas escaláveis.",
       "Possuo experiência no desenvolvimento de projetos full stack, APIs REST, integrações de sistemas, modelagem de bancos de dados e aplicações web, utilizando tecnologias como JavaScript, TypeScript, React, Node.js, C# (.NET), Java, SQL e MySQL.",
       "Atuo também com análise de dados e geração de insights através do Power BI, além de conhecimentos em ambientes Mainframe IBM (TSO/ZOWE), tecnologias corporativas voltadas a ERP e integração de processos empresariais, com formação complementar pelo SAP Learning Hub.",
       "Tenho interesse em Inteligência Artificial aplicada à automação, otimização de processos, produtividade e ganho de performance, utilizando IA como apoio no desenvolvimento, análise de dados e criação de soluções mais eficientes e inteligentes.",
@@ -131,12 +131,7 @@ export const ptBR: Translation = {
       {
         name: "Bacharelado em Sistemas de Informação",
         institution: "Universidade Santa Cecília (UNISANTA)",
-        period: "2024-Cursando - Previsão: Dez/2028 - 5º semestre",
-      },
-      {
-        name: "Bacharelado em Ciências Contábeis",
-        institution: "Universidade Santa Cecília (UNISANTA)",
-        period: "2026-Cursando - Previsão: Dez/2029 - 1º semestre",
+        period: "2024-Cursando - Previsão: Dez/2027 - 5º semestre",
       },
     ],
     certifications: [

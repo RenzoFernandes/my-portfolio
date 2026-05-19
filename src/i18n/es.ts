@@ -53,7 +53,7 @@ export const es: Translation = {
   },
   about: {
     body: [
-      "Soy estudiante de Sistemas de Información, con una futura segunda formación en Ciencias Contables, integrando tecnología, análisis de datos y visión estratégica de negocios para trabajar en el desarrollo de soluciones corporativas, automatización de procesos y sistemas escalables.",
+      "Soy estudiante de Sistemas de Información, integrando tecnología, análisis de datos y visión estratégica de negocios para trabajar en el desarrollo de soluciones corporativas, automatización de procesos y sistemas escalables.",
       "Tengo experiencia en el desarrollo de proyectos full stack, APIs REST, integraciones de sistemas, modelado de bases de datos y aplicaciones web, utilizando tecnologías como JavaScript, TypeScript, React, Node.js, C# (.NET), Java, SQL y MySQL.",
       "También trabajo con análisis de datos y generación de insights mediante Power BI, además de contar con conocimientos en entornos IBM Mainframe (TSO/ZOWE) y tecnologías corporativas orientadas a ERP e integración de procesos empresariales, con formación complementaria en SAP Learning Hub.",
       "Tengo interés en la Inteligencia Artificial aplicada a la automatización, la optimización de procesos, la productividad y la mejora del rendimiento, utilizando la IA como apoyo en el desarrollo, el análisis de datos y la creación de soluciones más eficientes e inteligentes.",
@@ -131,12 +131,7 @@ export const es: Translation = {
       {
         name: "Licenciatura en Sistemas de Información",
         institution: "Universidad Santa Cecília (UNISANTA)",
-        period: "2024-En curso - Previsión: Dic/2028 - 5.º semestre",
-      },
-      {
-        name: "Licenciatura en Ciencias Contables",
-        institution: "Universidad Santa Cecília (UNISANTA)",
-        period: "2026-En curso - Previsión: Dic/2029 - 1.º semestre",
+        period: "2024-En curso - Previsión: Dic/2027 - 5.º semestre",
       },
     ],
     certifications: [
