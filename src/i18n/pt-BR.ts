@@ -42,7 +42,7 @@ export const ptBR: Translation = {
     summaryTitle: "Resumo",
     profileAlt: "Retrato de Renzo Fernandes",
     cardSummary:
-      "Profissional em formação em Sistemas de Informação (5º semestre), com experiência em projetos de desenvolvimento, perfil analítico e rápida capacidade de aprendizado. Interesse em desenvolvimento full stack, sistemas corporativos e tecnologia aplicada a negócios.",
+      "Profissional em formação em Sistemas de Informação (6º semestre), com experiência em projetos de desenvolvimento, perfil analítico e rápida capacidade de aprendizado. Interesse em desenvolvimento full stack, sistemas corporativos e tecnologia aplicada a negócios.",
   },
   sections: {
     about: "Sobre",
@@ -131,7 +131,7 @@ export const ptBR: Translation = {
       {
         name: "Bacharelado em Sistemas de Informação",
         institution: "Universidade Santa Cecília (UNISANTA)",
-        period: "2024-Cursando - Previsão: Dez/2027 - 5º semestre",
+        period: "2024-Cursando - Previsão: Dez/2027 - 6º semestre",
       },
     ],
     certifications: [

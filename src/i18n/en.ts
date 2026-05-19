@@ -42,7 +42,7 @@ export const en: Translation = {
     summaryTitle: "Summary",
     profileAlt: "Portrait of Renzo Fernandes",
     cardSummary:
-      "Information Systems student (5th semester), with experience in development projects, an analytical profile, and a strong ability to learn quickly. Interested in full stack development, enterprise systems, and technology applied to business.",
+      "Information Systems student (6th semester), with experience in development projects, an analytical profile, and a strong ability to learn quickly. Interested in full stack development, enterprise systems, and technology applied to business.",
   },
   sections: {
     about: "About",
@@ -131,7 +131,7 @@ export const en: Translation = {
       {
         name: "Bachelor's Degree in Information Systems",
         institution: "Santa Cecília University (UNISANTA)",
-        period: "2024-Ongoing - Expected: Dec/2027 - 5th semester",
+        period: "2024-Ongoing - Expected: Dec/2027 - 6th semester",
       },
     ],
     certifications: [

@@ -42,7 +42,7 @@ export const es: Translation = {
     summaryTitle: "Resumen",
     profileAlt: "Retrato de Renzo Fernandes",
     cardSummary:
-      "Estudiante de Sistemas de Información (5.º semestre), con experiencia en proyectos de desarrollo, perfil analítico y gran capacidad de aprendizaje. Interés en desarrollo full stack, sistemas corporativos y tecnología aplicada a los negocios.",
+      "Estudiante de Sistemas de Información (6.º semestre), con experiencia en proyectos de desarrollo, perfil analítico y gran capacidad de aprendizaje. Interés en desarrollo full stack, sistemas corporativos y tecnología aplicada a los negocios.",
   },
   sections: {
     about: "Sobre mí",
@@ -131,7 +131,7 @@ export const es: Translation = {
       {
         name: "Licenciatura en Sistemas de Información",
         institution: "Universidad Santa Cecília (UNISANTA)",
-        period: "2024-En curso - Previsión: Dic/2027 - 5.º semestre",
+        period: "2024-En curso - Previsión: Dic/2027 - 6.º semestre",
       },
     ],
     certifications: [
