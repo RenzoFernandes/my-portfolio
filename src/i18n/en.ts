@@ -28,7 +28,7 @@ export const en: Translation = {
     label: "Mobile menu",
   },
   hero: {
-    status: "Available • Internship / Junior",
+    status: "Available • Junior",
     role: "Full Stack Software Engineer",
     summary:
       "I am looking for my first opportunity in technology, with an interest in development, data, and enterprise systems, applying technology to solve real-world problems.",

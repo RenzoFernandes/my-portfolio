@@ -28,7 +28,7 @@ export const es: Translation = {
     label: "Menú móvil",
   },
   hero: {
-    status: "Disponible • Pasantía / Junior",
+    status: "Disponible • Junior",
     role: "Full Stack Software Engineer",
     summary:
       "Busco mi primera oportunidad en tecnología, con interés en desarrollo, datos y sistemas corporativos, aplicando la tecnología para resolver problemas reales.",

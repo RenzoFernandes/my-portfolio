@@ -28,7 +28,7 @@ export const ptBR: Translation = {
     label: "Menu mobile",
   },
   hero: {
-    status: "Disponível • Estágio / Júnior",
+    status: "Disponível • Júnior",
     role: "Full Stack Software Engineer",
     summary:
       "Busco minha primeira oportunidade em tecnologia, com interesse em desenvolvimento, dados e sistemas corporativos, aplicando a tecnologia na solução de problemas reais.",
